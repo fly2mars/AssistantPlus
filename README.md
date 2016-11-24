@@ -1,4 +1,8 @@
-# suAgent
-An multiple agents framework for clouds 3D printing.
+# Assistant+
 
+An personal AI tools for 
+
+* Analyzing data in excel.
+* Searching infomation on special topic.
+* Visulizing data on multiple form. 
 
