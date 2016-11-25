@@ -1,6 +1,6 @@
 # Assistant+
 
-An personal AI tools for 
+A personal AI tools for 
 
 * Analyzing data in excel.
 * Searching infomation on special topic.
