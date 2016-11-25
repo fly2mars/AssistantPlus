@@ -47,9 +47,28 @@ void suServer<HTTP> ::init()
 		*response << "HTTP/1.1 200 OK\r\nContent-Length: " << content_stream.tellp() << "\r\n\r\n" << content_stream.rdbuf();
 	};
 
+	//Upload file
+	//Post web service
+	resource[R"(^/(upload|UPLOAD)$)"]["POST"] =
+		[this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request)
+	{
+		std::stringstream content_stream;
+		content_stream << "<h1>Request from " << request->remote_endpoint_address << " (" << request->remote_endpoint_port << ")</h1>";
+		content_stream << request->method << " " << request->path << " HTTP/" << request->http_version << "<br>";
+		for (auto& header : request->header) {
+			content_stream << header.first << ": " << header.second << "<br>";
+		}
+
+		content_stream << "<h1>Content</h1>";
+		content_stream << request->content.string().c_str();
+		//find length of content_stream (length received using content_stream.tellp())
+		content_stream.seekp(0, std::ios::end);
+
+		*response << "HTTP/1.1 200 OK\r\nContent-Length: " << content_stream.tellp() << "\r\n\r\n" << content_stream.rdbuf();
+	};
 
 	//Post web service
-	resource[R"(^/\w+$)"]["POST"] = 
+	resource[R"(^/(ws|WS)_\w+$)"]["POST"] = 
 		[this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) 
 	{
 		std::stringstream content_stream;
@@ -59,6 +78,8 @@ void suServer<HTTP> ::init()
 			content_stream << header.first << ": " << header.second << "<br>";
 		}
 
+		content_stream << "<h1>Content</h1>";
+		content_stream << request->content.string().c_str();
 		//find length of content_stream (length received using content_stream.tellp())
 		content_stream.seekp(0, std::ios::end);
 
@@ -75,7 +96,7 @@ void suServer<HTTP> ::init()
 			std::shared_ptr<HttpServer::Request> request) {
 
 		try {
-			auto web_root_path = boost::filesystem::canonical("web");
+			auto web_root_path = boost::filesystem::canonical("WebRoot");
 			auto path = boost::filesystem::canonical(web_root_path / request->path);
 			//Check if path is within web_root_path
 			if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||

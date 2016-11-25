@@ -73,13 +73,17 @@ int main(int /*argc*/, char * /*argv[ ]*/)
 		});
 
 		//init agent memory
+		/*
 		if (!CServerSet::gOnly().init())
 		{
 			Utility::MessageBoxA("«Îœ»∆Ù∂ØRedis£°");
 			server.stop();
 			CServerSet::gOnly().gClear();
+			server_thread.join(); //wait until server is done
+
 			return 0;
 		}
+		*/
 		//start agent AI Controller
 		//suController::gOnly().start();
 
