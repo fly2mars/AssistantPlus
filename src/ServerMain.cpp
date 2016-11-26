@@ -73,7 +73,7 @@ int main(int /*argc*/, char * /*argv[ ]*/)
 		});
 
 		//init agent memory
-		/*
+		
 		if (!CServerSet::gOnly().init())
 		{
 			Utility::MessageBoxA("«Îœ»∆Ù∂ØRedis£°");
@@ -83,7 +83,7 @@ int main(int /*argc*/, char * /*argv[ ]*/)
 
 			return 0;
 		}
-		*/
+		
 		//start agent AI Controller
 		//suController::gOnly().start();
 

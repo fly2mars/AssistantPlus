@@ -26,6 +26,15 @@ void default_resource_send(const  suServer<HTTP> &server, const std::shared_ptr<
 	}
 }
 
+/* todo:
+ * extract information from post content 
+ * parse post parameters to params [param1: {key: value, key: value}
+**/
+void parsePostCotent(std::shared_ptr<HttpServer::Request> request, std::vector<std::map<std::string, std::string> > &params)
+{
+	suString content(request->content.string().c_str());
+}
+
 
 
 void suServer<HTTP> ::init()
