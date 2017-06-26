@@ -93,21 +93,23 @@ CONFIGURE_FILE(vc/${APP_NAME}.vcxproj.user ${OUTPUT_PATH}${APP_NAME}.vcxproj.use
 message(STATUS "编译后在bin目录生成文件，并使用模板文件和变量替换visual studio的调试设置")
 
 
-
 ######################################################################				      
 ####Assistant+ windows tray
-FILE(GLOB TRAY_SRC src/Config.cpp src/sysTray/*.h src/sysTray/*.cpp src/sysTray/*.rc)
-SET(tray_sources ${SRC_LIST})
-LIST(REMOVE_ITEM tray_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/ServerMain.cpp)
-add_executable (${APP_NAME}Tray 
-                ${tray_sources}
-	        ${TRAY_SRC}		  
-                )
-
-#target_link_libraries (${APP_NAME}Tray Win32Tools)
-if(MSVC) # Check if we are using the Visual Studio compiler
+if(WIN32)
+  FILE(GLOB TRAY_SRC src/Config.cpp src/sysTray/*.h src/sysTray/*.cpp src/sysTray/*.rc)
+  SET(tray_sources ${SRC_LIST})
+  LIST(REMOVE_ITEM tray_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/ServerMain.cpp)
+  add_executable (${APP_NAME}Tray 
+                  ${tray_sources}
+  	        ${TRAY_SRC}		  
+                  )
+  
+ #target_link_libraries (${APP_NAME}Tray Win32Tools)
+ if(MSVC) # Check if we are using the Visual Studio compiler
     set_target_properties(${APP_NAME}Tray PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+    set_target_properties(${APP_NAME}Tray PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS")
     Message(${APP_NAME}Tray " is a Windows program")
+  endif()
 endif()
 
 # copy binary to running director
@@ -118,8 +120,6 @@ ADD_CUSTOM_COMMAND(TARGET ${APP_NAME}Tray
 
 message(STATUS "公共代码文件目录: " ${CMAKE_SOURCE_DIR}/include)
 message(STATUS "公共库文件目录: " ${CMAKE_SOURCE_DIR}/lib)
-message(STATUS "注意：\n1)修改代码时应将[${APP_NAME}]目录拷贝的本机其它目录，")
-message(STATUS "2)调试结束后再将代码同步到快盘[${APP_NAME}]目录，并在ChangeLog文件中注明修改内容。")
 message(STATUS "3)CMake生成VC工程后，在suAgent工程的属性页->调试->将[工作目录]设为<你的代码目录>/Bin")
 message(STATUS "4)suAgent工程的属性页->调试->将[命令]设为<你的代码目录>/Bin/${APP_NAME}.exe，以便利用IDE进行调试。")
 
