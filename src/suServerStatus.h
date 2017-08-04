@@ -3,10 +3,13 @@
 //\brief 定义了与Agent中所有与状态维护相关的类，目前包括:
 //       rule, task(order), state的操作
 #include "suServiceInterface.h"
-#include <vector>
-#include <map>
 #include <list>
+
+#ifdef WIN32
 #include <time.h>
+#else 
+#include <sys/time.h>
+#endif
 
 
 //用户事件

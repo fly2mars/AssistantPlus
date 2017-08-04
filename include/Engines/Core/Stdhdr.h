@@ -2,13 +2,18 @@
 Stdhdr.h
 Written by Matthew Fisher
 
+Modified by Yuan Yao to build on Linux
+
 Collection of useful functions/macros/constants.
 */
 
 #pragma once
-
+  
 #include "Asserts.h"
 
+#ifdef __linux
+#define ExitProcess exit
+#endif
 //
 // Math namespace contains useful math-related constants and functions
 //
@@ -262,10 +267,11 @@ namespace Utility
     //
     // D3DValidate is used to assert that a DirectX call succeeded
     //
+#ifdef USE_D3D
     #define D3DValidate(x, Function) { HRESULT hr = (x); if(FAILED(hr)) SignalError(suString("The function ") + Function + suString(" has unexpectedly failed; the program will now abort."));}
     #define D3DAlwaysValidate(x, Function) { HRESULT hr = (x); if(FAILED(hr)) PersistentSignalError(suString("The function ") + Function + suString(" has unexpectedly failed; the program will now abort.")); }
     #define D3DValidateRelease(x) { ULONG References = x->Release(); PersistentAssert(References == 0, suString("Release reference count: ") + suString(References)); }
-
+#endif
     UINT Hash32(const BYTE *Start, UINT Length);
     UINT64 Hash64(const BYTE *Start, UINT Length);
 
@@ -394,13 +400,14 @@ namespace Utility
     }
 
     //
-    // Displays a Win32 message box with the data suString.
+    // Displays a Win32 message box (/shell message) with the data suString.
     //
     void MessageBox(const char *suString);
     void MessageBox(const suString &S);
     void CopysuStringToClipboard(const suString &S);
     suString LoadsuStringFromClipboard();
     void GetClipboardLines(suVector<suString> &Output);
+	void GetFilesFromDir(suString path, suVector<suString> &fileList, suString extFilter);
 
     bool FileExists(const suString &Filename);
 

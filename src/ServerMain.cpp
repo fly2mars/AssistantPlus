@@ -42,28 +42,33 @@ Socket Server </a>：介绍了Socket服务器的详细实现。
 //-----------------------------------------------------------
 
 /*! \page subpage2 代码说明
-
+Compile on linux with debug info
+- cmake .. ver=debug
+- gdb Assitant+
 */
 
 /*! \page subpage3 使用手册
 
 */
+#undef UNIT_TEST
 #include "config.h"
+
+#include "ServerSet.h"
 #include "suSocketServer.hpp"
-#include "ServerSet.h "
 #include "suAgentController.h"
 
-int main(int /*argc*/, char * /*argv[ ]*/)
-{
-	//suAgentHelper agent;
 
-	CServerSet::gOnly().LoadSetting();
-	CServerSet::gOnly().ReadModules("");
+int main(int argc, char **argv)
+{
 
 	try
 	{
-		int nThread = CServerSet::gOnly().GetOption().GetOptionVal(L"Number of Threads");
-		int nPOrt = CServerSet::gOnly().GetOption().GetOptionVal(L"Serverport");
+		//suAgentHelper agent;
+		CServerSet::gOnly().LoadSetting();
+		CServerSet::gOnly().ReadModules("");
+
+		int nThread = CServerSet::gOnly().GetOption().GetOptionVal("Number of Threads");
+		int nPOrt = CServerSet::gOnly().GetOption().GetOptionVal("Serverport");
 
 		HttpServer server(nPOrt, nThread);
 
@@ -76,7 +81,7 @@ int main(int /*argc*/, char * /*argv[ ]*/)
 		
 		if (!CServerSet::gOnly().init())
 		{
-			Utility::MessageBoxA("请先启动Redis！");
+			Utility::MessageBox("请先启动Redis！");
 			server.stop();
 			CServerSet::gOnly().gClear();
 			server_thread.join(); //wait until server is done

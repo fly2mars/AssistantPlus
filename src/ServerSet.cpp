@@ -1,7 +1,5 @@
 #include "ServerSet.h"
-#include <tchar.h>
-#include <io.h>
-#include <direct.h>
+
 #include <iostream>
 
 
@@ -32,7 +30,6 @@ void CServerSet::gClear()
 }
 CServerSet::CServerSet()
 {
-	m_strCurDir = SU::GetModuleDir();
 	bPlugInLoad = FALSE;
 
 	//pStatus = new suEStatus();	
@@ -49,7 +46,7 @@ std::string  CServerSet::GetOption(std::string key)
 	std::string keyName;
 	try
 	{
-		keyName = m_Options.GetOption(SU::s2ws(key));
+		keyName = m_Options.GetOption(key);
 	}
 	catch (...){
 		;
@@ -71,20 +68,13 @@ int CServerSet::LoadSetting()
 {
 	m_Options.LoadSetting();	
 
-	//set web root
-	m_webRootDir = m_Options.GetOption(L"Web Root");
-	/*if (m_webRootDir.find("\\",0) != 0)
-	{
-		m_webRootDir = "\\" + m_webRootDir;
-	}*/
-	if (m_webRootDir.find("\\",1) != m_webRootDir.size()-1)
-	{
-		m_webRootDir = m_webRootDir + std::string("\\");
-	}
-	m_webRootDir = SU::GetModuleDir()+ m_webRootDir;
+	//set path
+	m_strCurDir = SU::GetModuleDir();
+	m_webRootDir = m_Options.GetOption("Web Root");
+	m_appRootDir = m_Options.GetOption("App Root");
 
 	try{
-		strBindIp_ = m_Options.GetOption(L"ServerIP");
+		strBindIp_ = m_Options.GetOption("ServerIP");
 	}
 	catch (...)
 	{
@@ -97,8 +87,6 @@ int CServerSet::LoadSetting()
 		else{
 			strBindIp_ = "127.0.0.1";
 		}		
-		//TODO: modify config.xml here
-		//Bind 
 	}
 	//std::cout << "Bind IP: " << strBindIp_ << std::endl;
 
@@ -134,81 +122,39 @@ suService*   CServerSet::LoadModuleEx(string sModuleFilePath)
 }
 void  CServerSet::ReadModules(string sModulesPath)
 {
-	long handle;
-	struct _finddata_t fs;    //!< file struct
-	string strPath;
-
-	strPath = m_strCurDir + string(APPDIR);
-
-	_chdir(strPath.c_str());
-	handle = _findfirst("*.dll",&fs);
-
-	//if (handle == -1)
-	//{
-	//	gLogStream << "ReadModules:File find error";
-	//	return;
-	//}
-
-	if (GetFileAttributes(fs.name) & FILE_ATTRIBUTE_DIRECTORY)
-	{
-		//is directory
-		if (*fs.name != '.')
-		{
-			Console::WriteLine("No dll in the path");
-			return;;
-		}
-	}else
-	{
+	//Using Utility::GetFilesFromDir to make compatible with linux.
+	std::string  strPath = m_strCurDir + m_appRootDir + "/";      
+	suVector<suString> dll_path_list;
+	Utility::GetFilesFromDir(strPath.c_str(), dll_path_list, "*.dll");
+	
+	if (!dll_path_list.Length()){
+		Console::WriteLine("No dll in the path");
+		return;
+	}	
+	else {
 		modulesMapList_.clear();
+		Console::WriteLine("--------------Modules-------------");
 		try
 		{
-			string keyStr = fs.name;
-			keyStr = keyStr.substr(0,keyStr.size()-4);
-			for(int i=0;i<(int)keyStr.size();i++)
-			{
-				keyStr[i] = (char)(toupper(keyStr[i]));
+			for (int i = 0; i < dll_path_list.Length(); i++) {
+				suString filename = dll_path_list[i];
+				suString ext = filename.FindExtension();
+				suString service_name = filename.SubString(0, filename.Length() - ext.Length()).MakeUppercase();
+				
+				_tString path = strPath +  _tString(filename.CString());
+				modulesMapList_[service_name.CString()] = LoadModuleEx(path);
+				modulesMapList_[service_name.CString()]->initialize();
 			}
-			modulesMapList_[keyStr] = LoadModuleEx(fs.name);
-			modulesMapList_[keyStr]->initialize();
+			
 		}
 		catch (std::bad_exception e)
 		{
-			cout << e.what() << endl;			
-		}
-		
-	}
-
-	while (!_findnext(handle, &fs))
-	{
-		if (GetFileAttributes(fs.name) & FILE_ATTRIBUTE_DIRECTORY)
-		{
-			//is directory
-			if (*fs.name != '.')
-			{
-				return ;
-			}
-		}else
-		{
-			//Load Dll Info
-			try
-			{
-				string keyStr = fs.name;
-				keyStr = keyStr.substr(0,keyStr.size()-4);
-				for(int i=0;i<(int)keyStr.size();i++)
-				{
-					keyStr[i] = (char)(toupper(keyStr[i]));
-				}
-				modulesMapList_[keyStr] = LoadModuleEx(fs.name);
-				modulesMapList_[keyStr]->initialize();			
-			}
-			catch (std::bad_exception e)
-			{
-				cout << e.what() << endl;			
-			}
+			cout << e.what() << endl;
 		}
 	}
-
-	_findclose(handle);
+	
+	
+	
 
 }
 suService*   CServerSet::GetModule  (string sServiceName)
@@ -228,6 +174,7 @@ suService*   CServerSet::GetModule  (string sServiceName)
 
 std::string CServerSet::GetComputerIP(std::vector<std::string> &ipArr)
 {
+#ifdef WIN32
 	char ac[80];
 	ipArr.clear();
 
@@ -257,6 +204,33 @@ std::string CServerSet::GetComputerIP(std::vector<std::string> &ipArr)
 	WSACleanup();
 
 	return ipArr[0];
+#elif __linux
+	int sock = socket(AF_INET, SOCK_DGRAM, 0);
+	assert(sock != -1);
+
+	const char* kGoogleDnsIp = "8.8.8.8";
+	uint16_t kDnsPort = 53;
+	struct sockaddr_in serv;
+	memset(&serv, 0, sizeof(serv));
+	serv.sin_family = AF_INET;
+	serv.sin_addr.s_addr = inet_addr(kGoogleDnsIp);
+	serv.sin_port = htons(kDnsPort);
+
+	int err = connect(sock, (const sockaddr*)&serv, sizeof(serv));
+	assert(err != -1);
+
+	sockaddr_in name;
+	socklen_t namelen = sizeof(name);
+	err = getsockname(sock, (sockaddr*)&name, &namelen);
+	assert(err != -1);
+
+	int buflen = 16;
+	char buffer[16];
+	const char* p = inet_ntop(AF_INET, &name.sin_addr, buffer, buflen);
+	assert(p);
+	close(sock);
+	return std::string(buffer);
+#endif
 }
 
 /* 系统变量

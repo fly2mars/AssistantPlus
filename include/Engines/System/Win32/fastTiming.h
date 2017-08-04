@@ -12,14 +12,14 @@ typedef __int64 LONGLONG;
 #include <time.h>   // For time()
 
 
-/*\class suHiResElapsedTime
+/*\class suElapsedTime
 * High-resolution Simple elapsed time class
 */
 
-class suHiResElapsedTime
+class suElapsedTime
 {
 public:
-  suHiResElapsedTime ();
+  suElapsedTime ();
   // Record the current time
 
   double usec () const;

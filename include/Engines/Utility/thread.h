@@ -6,7 +6,7 @@
 
 #if !defined(SU_NOTHREADS) && defined(WIN32)
 #include <Engines/System/Win32/thread.h>
-#elif !defined(SU_NOTHREADS) && defined(HasPTHREADS)
+#elif defined(__linux__)
 #include <Engines/System/unix/thread.h>
 #else
 

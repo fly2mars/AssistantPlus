@@ -4,8 +4,37 @@ Common utility functions.
 */
 #include <strstream>
 #include <cstdarg>
+#include "../Core/Vector.h"
 
 namespace SU{
+	//
+	// Output vector to file  
+	//
+	template <class T> void SaveToASCIIFile(suVector<T> &v, const suString &Filename)
+	{
+		std::ofstream File(Filename.CString());
+		PersistentAssert(!File.fail(), "Failed to open file");
+		File << v._Length << endl;
+		for (unsigned int Index = 0; Index < v._Length; Index++)
+		{
+			File << v._Data[Index] << '\n';
+		}
+	}
+	//
+	// Read vector from file  
+	//
+	template <class T> void LoadFromASCIIFile(suVector<T> &v, const suString &Filename)
+	{
+		std::ifstream File(Filename.CString());
+		PersistentAssert(!File.fail(), "Failed to open file");
+		unsigned int Length;
+		File >> Length;
+		v.Allocate(Length);
+		for (unsigned int Index = 0; Index < Length; Index++)
+		{
+			File >> v._Data[Index];
+		}
+	}
 
 	void Output(const _tString &message);
 	std::wstring s2ws(const std::string& s);

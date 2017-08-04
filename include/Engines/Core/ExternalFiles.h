@@ -6,9 +6,20 @@
 */
 
 // Windows
-#include <winsock2.h>   //to aoid sock type error http://stackoverflow.com/questions/9750344/boostasio-winsock-and-winsock-2-compatibility-issue
+#ifdef WIN32
+#include <winsock2.h>   //to avoid sock type error http://stackoverflow.com/questions/9750344/boostasio-winsock-and-winsock-2-compatibility-issue
 #include <windows.h>
 #include <winuser.h>
+#include <io.h>
+#include <time.h>
+#include <limits>
+#elif __linux
+#include <assert.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
 
 #ifdef USE_OPENGL
 // OpenGL
@@ -24,22 +35,27 @@
 // C/C++
 #include <math.h>
 #include <memory.h>
-#include <time.h>
-#include <io.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <strstream>
 #include <fstream>
-#include <limits>
 #include <exception>
 
 // STL
+#undef max
+#undef min
 #include <map>
 #include <queue>
 #include <set>
+#include <list>
 #include <vector>
+#include <algorithm>
+
+
 
 #ifdef USE_ZLIB
 // ZLib (compression)

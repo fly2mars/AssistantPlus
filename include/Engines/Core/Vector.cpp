@@ -6,6 +6,7 @@ Written by Matthew Fisher
 #pragma once
 
 #include "Vector.h"
+#include "Stdhdr.h"
 
 template <class T> void suVector<T>::Clear(const T &Value)
 {
@@ -179,7 +180,7 @@ template <class T> void suVector<T>::Randomize()
     unsigned int Length = _Length;
     for(unsigned int i = 0; i < Length; i++)
     {
-        unsigned int RandomNumber = unsigned int(rand());
+        unsigned int RandomNumber = (unsigned int)(rand());
         Utility::Swap(_Data[i], _Data[i + RandomNumber % (Length - i)]);
     }
 }

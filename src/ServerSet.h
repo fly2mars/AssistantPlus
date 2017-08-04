@@ -7,37 +7,20 @@
 *2006-08-01
 *为适合自动升级需求，改回原有插件管理的结构
 */
-#pragma once
+
 #include "config.h"
-
-
 #include "Option.h"
-#include <assert.h>
 #include "suServerStatus.h"
 
 ////////////////////////////////////////////////////////////////
 //Define all interface here
 ///////////////////////////////////////////////////////////////
-#define IDEGINEDIR "IDEgine\\"
-#define APPDIR     "APP\\"
-#define LOGDIR     "Log\\"
+#define IDEGINEDIR "IDEgine/"
+#define APPDIR     "APP/"
+#define LOGDIR     "Log/"
 #define CURVERSION 0x00010000
 
 
-
-////////////////////////////////////////////////////////////////
-//!AppServer interface
-///////////////////////////////////////////////////////////////
-
-
-//!Server提供的上下文结构，其中包含了从ID引擎和ID Server传送App Server的全部接口
-//#pragma pack(1)
-
-
-
-////////////////////////////////////////////////////////////////
-//lock
-///////////////////////////////////////////////////////////////
 typedef suLock CServerLock;
 
 ////////////////////////////////////////////////////////////////
@@ -67,23 +50,23 @@ public:
 
 	//!私有变量设定
 	void    SetLog(BOOL isLog_);                  //!<是否写日志
-	void    SetThreadNum(int n){ nThreadNum = n; }
-	void    SetInBufSize(DWORD dSize){ nInBufSize_ = dSize; }
-	void    SetOutBufSize(DWORD dSize){ nOutBufSize_ = dSize; }
+	void    SetThreadNum(int n) { nThreadNum = n; }
+	void    SetInBufSize(DWORD dSize) { nInBufSize_ = dSize; }
+	void    SetOutBufSize(DWORD dSize) { nOutBufSize_ = dSize; }
 
-	BOOL    IsLog(){ return isLog_; }
-	BOOL    IsLoad(){ return bPlugInLoad; }
+	BOOL    IsLog() { return isLog_; }
+	BOOL    IsLoad() { return bPlugInLoad; }
 	void    SetLogFileName(const std::string &name);//!<设置log文件名
 
 	std::string  GetComputerIP(std::vector<std::string> &ipArr);    //!<返回第一个IP地址，仅能用在网络监听没有初始化的时候，否则调用WSACleanup()将导致网络中断
-	std::string  GetDir(){ return m_strCurDir; }
-	std::string  GetIP(){ return strBindIp_; }
-	std::string  GetWebRootDir(){ return m_webRootDir; }
+	std::string  GetDir() { return m_strCurDir; }
+	std::string  GetIP() { return strBindIp_; }
+	std::string  GetWebRootDir() { return m_webRootDir; }
 	std::string  GetOption(std::string key);
-	const int    GetThreadNum(){ return nThreadNum; }
-	const DWORD  GetInBufSize(){ return nInBufSize_; }
-	const DWORD  GetOutBufSize(){ return nOutBufSize_; }
-	COption&     GetOption(){ return m_Options; }
+	const int    GetThreadNum() { return nThreadNum; }
+	const DWORD  GetInBufSize() { return nInBufSize_; }
+	const DWORD  GetOutBufSize() { return nOutBufSize_; }
+	COption&     GetOption() { return m_Options; }
 
 
 	//New Load dll functions
@@ -100,7 +83,6 @@ public:
 
 	suAgentMemory *pStatus;
 
-
 private:
 	static CServerSet* gOnly_;
 	CServerSet();
@@ -109,6 +91,7 @@ private:
 	std::string strBindIp_;
 	std::string m_strCurDir;
 	std::string m_webRootDir;
+	std::string m_appRootDir;
 	DWORD       m_version;
 
 
@@ -121,7 +104,6 @@ private:
 
 	COption        m_Options;
 	ModulesMap     modulesMapList_;     //!<存储装入的动态链接库函数接口与生成Services名的映射，Services名=动态模块文件名
-	
 };
 
 

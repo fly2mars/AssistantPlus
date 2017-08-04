@@ -158,6 +158,15 @@ suString suString::MakeLowercase() const
     }
     return Result;
 }
+suString suString::MakeUppercase() const
+{
+	suString Result(*this);
+	for (UINT i = 0; i < Result._Length; i++)
+	{
+		Result[i] = toupper(Result[i]);
+	}
+	return Result;
+}
 
 void suString::Partition(char Seperator, suVector<suString> &Output, bool PushEmptyStrings) const
 {
@@ -375,6 +384,26 @@ suString suString::RemovePrefix(const suString &StartCandidate) const
     return Result;
 }
 
+suString suString::FindExtension() const
+{
+	suString Result = *this;
+	int idx = Result.FindLastIndex('.');
+	if (idx != -1)
+		return Result.SubString(idx, Length() - idx);
+	return "";
+}
+
+suString suString::SubString(int iStart, int nLen)
+{
+	suString Result;
+	if (iStart < 0 || iStart > Length() - 1 || nLen > Length() - iStart)
+		SignalError("iStart or nLen out of range!");
+	
+	for (int i = 0; i < nLen; i++) {
+		Result.PushEnd(_Data[iStart++]);
+	}
+	return Result;
+}
 bool suString::IsPrefix(const suString &StartCanidate) const
 {
     if(_Length < StartCanidate._Length)

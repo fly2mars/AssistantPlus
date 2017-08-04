@@ -5,6 +5,10 @@ Written by Matthew Fisher
 Implementation of suUnicodeString class.
 */
 
+#ifdef __linux
+#include <wchar.h>
+#endif
+
 void suUnicodeString::ResizeToCStringLength()
 {
     for(UINT i = 0; i < _Capacity; i++)
@@ -30,7 +34,11 @@ suUnicodeString& suUnicodeString::operator = (UnicodeCharacter Character)
 
 suUnicodeString& suUnicodeString::operator = (const UnicodeCharacter *S)
 {
+#ifdef WIN32
     UINT NewLength = UINT(lstrlenW(S));
+#else
+	UINT NewLength = wcslen(S);
+#endif
     Allocate(NewLength + 1);
     memcpy(_Data, S, (NewLength + 1) * sizeof(UnicodeCharacter));
     _Length = NewLength;
@@ -321,7 +329,12 @@ bool operator == (const suUnicodeString &L, const suUnicodeString &R)
 
 bool operator == (const UnicodeCharacter *L, const suUnicodeString &R)
 {
-    UINT LLen = UINT(lstrlenW(L));
+#ifdef WIN32
+	UINT LLen = UINT(lstrlenW(L));
+#else
+	UINT LLen = wcslen(L);
+#endif
+    
     UINT RLen = R.Length();
     if(LLen != RLen)
     {

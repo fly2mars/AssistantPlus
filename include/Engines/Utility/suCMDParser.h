@@ -60,7 +60,7 @@ public:
 		std::vector<suString>::iterator it = std::find(cmd.begin(), cmd.end(), tag);
 		if((it+1) == cmd.end() || *(it+1) == suString(" "))
 		{   suString msg = "No value is found for " + *it;
-			throw std::exception(msg.CString());
+			throw suException(msg.CString());
 		}
 		return *(it+1);
 	}

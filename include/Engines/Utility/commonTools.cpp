@@ -82,6 +82,7 @@ namespace SU{
 
 		if (0 == ::GetCurrentDirectory(size, spBuf.get()))
 		{
+			suException e("");
 			throw suFuncException("GetCurrentDirectory()", "Failed to get current directory");
 		}
 

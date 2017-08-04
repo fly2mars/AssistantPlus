@@ -8,6 +8,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "ServerSet.h"
+
 void default_resource_send(const  suServer<HTTP> &server, const std::shared_ptr< suServer<HTTP>::Response> &response,
 	const std::shared_ptr<std::ifstream> &ifs) {
 	//read and send 128 KB at a time
@@ -105,7 +107,9 @@ void suServer<HTTP> ::init()
 			std::shared_ptr<HttpServer::Request> request) {
 
 		try {
-			auto web_root_path = boost::filesystem::canonical("WebRoot");
+			boost::filesystem::current_path(boost::filesystem::path(CServerSet::gOnly().GetDir()));
+			auto web_root_path = boost::filesystem::canonical(CServerSet::gOnly().GetWebRootDir());
+			//web_root_path = boost::filesystem::path(CServerSet::gOnly().GetWebRootDir());
 			auto path = boost::filesystem::canonical(web_root_path / request->path);
 			//Check if path is within web_root_path
 			if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||

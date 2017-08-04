@@ -1,0 +1,442 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=gb2312" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Agent管理。">
+  <meta name="author" content="Yuan">
+
+  <title></title>
+    <style type="text/css">
+		div.h { display: none; }
+		div.s { display: block; margin: 10px; }
+	</style>
+	<link href="css/zui.min.css" rel="stylesheet">
+	<link href="css/doc.css" rel="stylesheet">
+	<script type="text/javascript" src="js/soapclient.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	   <script src="js/jquery.js"></script>
+   <script src="dist/js/zui.min.js"></script>
+   <script src="js/prettify.js"></script>
+   <script src="js/doc.js"></script>
+	<script type="text/javascript">
+	//var url = "http://127.0.0.1:5001/null";
+		
+
+	function ReplaceWithServiceUrl(serviceName)
+	{
+		var str =  document.location.href;
+		var newUrl =  location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '') + "/" + serviceName;
+		return newUrl;
+	}
+
+	// DEMO 1
+	function HelloWorld()
+	{
+		var pl = new SOAPClientParameters();
+		pl.add("cmd", "Hi, I'm running!");
+		var url_ = ReplaceWithServiceUrl("null");
+		document.getElementById("null_url").innerHTML = url_ ;
+		SOAPClient.invoke(url_, "run", pl, true, HelloWorld_callBack);
+	}
+	function HelloWorld_callBack(r)
+	{	   
+		alert(r);
+	}
+
+
+	// DEMO 2
+	function SetGVar()
+	{
+		var pl = new SOAPClientParameters();
+		pl.add("cmd", document.frmDemo.textEditVarValue.value);
+		var url_ = ReplaceWithServiceUrl("setVar");
+		//url = "http://10.96.146.77:5001/getVar";
+		SOAPClient.invoke(url_, "run", pl, true, SetGVar_callBack);
+	}
+	function SetGVar_callBack(r)
+	{
+		alert(r);
+	}
+
+	// DEMO 3
+	function GetGVar()
+	{
+			var pl = new SOAPClientParameters();
+			pl.add("cmd", document.frmDemo.vName.value);
+			var url_ = ReplaceWithServiceUrl("getVar");
+			SOAPClient.invoke(url_, "run", pl, true, GetGVar_callBack);
+	}
+	function GetGVar_callBack(r)
+	{
+			alert(r);
+	}
+
+	// DEMO 3-1
+	
+	// DEMO 11
+	function GetSoapResponse()
+	{
+		var pl = new SOAPClientParameters();
+		pl.add("cmd", document.frmDemo.textEditVarValue.value);
+		var url_ =ReplaceWithServiceUrl("setVar");
+		SOAPClient.invoke(url_, "run", pl, true, GetSoapResponse_callBack);
+	}
+	function GetSoapResponse_callBack(r, soapResponse)
+	{
+	    alert("失效函数，修改中..");
+		alert(soapResponse.xml);
+	}
+
+	// utils
+	function toggle(id)
+	{
+		var d = document.getElementById(id);
+		if(d != null)
+			d.className = (d.className == "h") ? "s" : "h";
+	}
+	
+	////////////////////////////////////////////Agent Javascript
+	function GetIP()
+	{				 
+			var pl = new SOAPClientParameters();
+			pl.add("cmd", "SYS_IP");
+			var url_ = ReplaceWithServiceUrl("getVar");
+			SOAPClient.invoke(url_, "run", pl, true, GetIPCB);
+	}
+	function GetIPCB(r)
+	{
+		document.getElementById("SYS_IP").innerHTML = r;
+	}
+	
+	function GetCAgentIP()
+	{				 
+			var pl = new SOAPClientParameters();
+			pl.add("cmd", "CAGENT_IP");
+			var url_ = ReplaceWithServiceUrl("getVar");
+			SOAPClient.invoke(url_, "run", pl, true, GetCIPCB);
+	}
+	function GetCIPCB(r)
+	{
+		document.getElementById("CAGENT_IP").innerHTML = r;
+	}
+
+	//Query Services
+	function getServices()
+	{
+	    var pl = new SOAPClientParameters();
+		pl.add("cmd", "SERVICE_LIST");
+		var url_ = ReplaceWithServiceUrl("ServerStatus");		
+		SOAPClient.invoke(url_, "run", pl, true, listVirtualServiceCB);
+	}
+	//Query rules
+	function getRules()
+	{
+		var pl = new SOAPClientParameters();
+		var url_ = ReplaceWithServiceUrl("ServerStatus");
+		pl.add("cmd", "RULE_LIST");			
+		SOAPClient.invoke(url_, "run", pl, true, listRulesCB);
+	}
+	function delRule(ruleId)
+	{
+	    var strCMD = "DEL_RULE&" + ruleId;
+        var pl = new SOAPClientParameters();
+		pl.add("cmd", strCMD); 
+		var url_ = ReplaceWithServiceUrl("ServerStatus");						
+		SOAPClient.invoke(url_, "run", pl, true, delRuleCB);	
+	}
+	function delRuleCB(r)
+	{
+	    console.log(r);
+	    if(r == 'OK')  getRules();		
+	}
+	function addRule()
+	{
+	    var ruleName = $("#ruleName").val();
+		//var cKeyDesc=$("#sysVariable").find("option:selected").text();
+		var cKey    =$("#sysVariable").find("option:selected").val(); 
+        var cValue  =$("#cDescValue").val();
+		var aKey = $("#actType").find("option:selected").val(); 
+		var aValue = $("#actValue").find("option:selected").val(); 
+		
+		if(ruleName.length == 0 ) ruleName = 'MatchRule';
+        
+        //condition canbe more than one
+		var jsonCond = [{
+		   "cond_key" : cKey,
+		   "cond_value" : cValue
+		}];
+		
+		var jsonRule = {
+		   "name" : ruleName,
+           "condition" : jsonCond,
+           "actionType" : aKey,
+		   "action" : aValue
+         };		 
+
+        var strJson = JSON.stringify(jsonRule);		 
+		//Add a new rule
+		var pl = new SOAPClientParameters();
+		pl.add("cmd", strJson);
+		var url_ = ReplaceWithServiceUrl("ServerStatus");		
+		SOAPClient.invoke(url_, "run", pl, true, addRuleCB);
+		
+		console.log(strJson);
+		//console.log(cKey);		
+	}
+	function addRuleCB(r)
+	{
+	   if(r == 'OK')
+	   { 
+	     //update rule list
+		 getRules();
+		 return;
+	   }
+	   alert("添加失败！");
+	   
+	}
+	function testReturn(r)
+	{
+		console.log(r);
+	}
+	
+	//Virtural service list
+	function listVirtualServiceCB(r)
+	{ 	
+	    //read service list from Agent	
+		var simRes =r;
+		//var simRes = '[{"name":"Fem"}, {"name":"Convert"}, {"name":"FOOM"}]';
+		//var simRes = '[{"name":"AGENTMONITOR"},{"name":"CONVERT"},{"name":"EXECUTOR"},{"name":"GETVAR"},{"name":"NULL"},{"name":"ORDERLISTENER"},{"name":"QUERYORDER"},{"name":"QUOTE"},{"name":"RULEENGINE"},{"name":"SERVERSTATUS"},{"name":"SETVAR"},{"name":"TASKQUERY"},{"name":"TASKSUBMIT"},{"name":"TRANSLATOR"}]';
+		var jsonArr = $.parseJSON(simRes);
+		
+		var jsonData = {};
+		
+		var sHtml="";		
+		for(var i=0; i<jsonArr.length; i++)
+		{ 
+		  sHtml += '<li><i class="' + 'icon-user' + '"></i>' +  jsonArr[i].name + '</li>';
+		  
+		  jsonData[jsonArr[i].name] = jsonArr[i].name;
+		}		
+	    document.getElementById("listVS").innerHTML = sHtml ;
+		//document.write(sHtml);
+		//update virtual service number
+		vsnumHtml = jsonArr.length + "个制造相关虚拟服务";
+		
+		document.getElementById("vs_num").innerHTML = vsnumHtml;
+		
+		
+		addActList(jsonData);
+	}
+	//Add service to action select opnion
+	function addActList(newOptions)
+	{
+	    /*
+		var newOptions = {"Option 1": "value1",
+        "Option 2": "value2",
+        "Option 3": "value3"
+         };
+		 */
+
+        var $el = $("#actValue");
+        $el.empty(); // remove old options
+        $.each(newOptions, function(value,key) {
+           $el.append($("<option></option>").attr("value", value).text(key));
+        });
+	}
+	
+	//List rules	
+	function listRulesCB(r)
+	{ 
+	    //read service list from Agent	
+		var simRes = r;
+		/*
+        var simRes = '[{"name": "rule1", "id": "306451129", "actionType": "run", "action": "convert", \
+		                 "condition":[{"cond_key":"description", "cond_value":"convert"},{"cond_key":"size", "cond_value":"30"}]},\
+						 {"name": "rule2", "id": "306451129", "actionType": "run", "action": "quote",\
+						 "condition":[{"cond_key":"description", "cond_value":"quote"}]}]'
+		*/
+		//console.log(r);
+		var jsonArr = $.parseJSON(r);
+		var sHtml = ' <h2>规则列表</h2><table class="table"><tr><th class="col-md-3">规则名称</th><th>条件</th><th>行为</th><th>编辑</th><th>删除</th></tr>';
+       		
+		for(var i=0; i<jsonArr.length; i++)
+		{ sHtml += '<tr>';
+		  sHtml +=  '<td>' + jsonArr[i].name + '</td>';
+		  sHtml +=  '<td>';
+         	 
+		  for(var j=0; j<jsonArr[i].condition.length; j++)
+		  {
+		    sHtml +=  jsonArr[i].condition[j].cond_key + '=' + jsonArr[i].condition[j].cond_value + ' ';			
+		  }	
+		  sHtml += '</td><td>' + jsonArr[i].actionType + ' ' + jsonArr[i].action + '</td>';
+		  sHtml += '<td><button type="button" class="btn btn-default" onclick=";">编辑</button></td>';
+		  sHtml += '<td><button type="button" class="btn btn-default" onclick="delRule(\'' + jsonArr[i].id  + '\');">删除</button></td>';
+		  
+		  sHtml += '</tr>';
+		}
+		
+		sHtml += '</table>';
+		
+		//console.log(sHtml);
+		//document.write(sHtml);
+	    document.getElementById("RulesList").innerHTML = sHtml ;
+	}
+
+	</script>
+</head>
+<body>
+ <header>
+    <nav id="navbar" class="navbar navbar-inverse navbar-fixed-left navbar-collapsed" role="navigation">
+      <div class="navbar-header">
+
+        <a class="navbar-brand" href="">Agent监控面板</a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse">
+        <ul class="nav navbar-nav collapsed">
+          <li class="nav-heading">基本信息</li>
+          <li><a href="#suAgentStatus">整体概览</a></li>
+          <li><a href="#Resources">资源列表</a></li>          
+        </ul>
+		 <ul class="nav navbar-nav collapsed">
+	            <li class="nav-heading">规则管理</li>
+	            <li><a href="#">规则列表</a></li>
+	            <li><a href="#RulesAdd">规则编辑</a></li>
+	    </ul>
+        <ul class="nav navbar-nav collapsed">
+          <li class="nav-heading">监控</li>
+          <li><a href="#">重启与更新(TODO)</a></li>
+          <li><a href="#">参数设置(TODO)</a></li>
+        </ul>
+       
+	    <ul class="nav navbar-nav collapsed">
+			            <li class="nav-heading">扩展应用</li>
+			            <li><a href="#">TODO</a></li>
+			            <li><a href="#">TODO</a></li>
+	    </ul>
+	    </div>
+      </div>
+    </nav>
+  </header>
+
+  <div id="main">
+    <div class="jumbotron text-center">
+	      <h1>Agent监视器</h1>
+	      <p class='text-muted'>基于浏览器的交互界面，用于本地和远程Agent行为测试和状态监控。</p>
+	      <br>
+
+       <hr>
+    </div>
+	 <div>
+	     <section id="suAgentStatus">
+
+        <h2>Agent信息</h2>
+        <p>类型：<span id="null_url">资源节点</span></p>
+         <table class="table">
+          <tr>
+            <th class="col-md-3">项目</th>
+            <th>状态</th>
+			 <th class="col-md-3">项目</th>
+            <th>状态</th>
+          </tr>
+          <tr>
+            <td><button type="button" class="btn btn-default">系统IP</button></td>
+            <td><span id="SYS_IP">127.0.0.1</span></td>
+			<td><button type="button" class="btn btn-default">聚合地址</button></td>
+            <td><span id="CAGENT_IP">127.0.0.1</span></td>
+          </tr>
+          <tr>
+            <td><button type="button" class="btn btn-primary">资源数量</button></td>
+            <td><span id="vs_num">10个制造相关虚拟服务</span></td>
+			<td><button type="button" class="btn btn-info">周边资源</button></td>
+            <td>未检测到</td>
+          </tr>
+          <tr>
+            <td><button type="button" class="btn btn-warning">资源利用</button></td>
+            <td>15%</td>
+			  <td><button type="button" class="btn btn-danger">系统状态</button></td>
+            <td>良好</td>			
+          </tr>
+          
+            
+			
+        </table>
+	 </div>
+	
+	 <div>
+	    <section id="Resources">
+		   <h2>资源列表</h2>
+		   <div class="icons example">
+          <ul class='clearfix' id="listVS">		  
+           
+		</ul>
+		</div>
+		</section>
+	 </div>
+	
+	 <div>
+	    <section id="RulesAdd">		 		
+		   <h2>添加规则</h2>
+		    <table class="table">
+             <tr>
+			 <th>规则名称</th>
+             <th >状态名称</th>
+             <th>状态赋值</th>
+			  <th>操作类别</th>
+			 <th>操作实体</th>
+			 <th>..</th>
+          </tr>
+          <tr>
+		    <td><input type='text' name='ruleName' id='ruleName' value='' class='form-control' placeholder='MatchRule' /></td>
+            <td>
+			<select name='sysVariable' id='sysVariable' class='form-control'>
+                <option value='description' selected='selected'>订单描述</option>
+                <option value='sysStatus'>系统状态</option>
+              </select>
+			</td>
+            <td><input type='text' name='cDescValue' id='cDescValue' value='' class='form-control' placeholder='赋值' /></td>
+			<td>
+			<select name='actType' id='actType' class='form-control'>
+                <option value='run' selected='selected'>运行</option>
+                <option value='stop'>停止</option>
+              </select>
+			</td>
+			 <td>
+			 <select name='actValue' id='actValue' class='form-control'>
+			    <!--虚拟服务列表-->
+                <option value='convert' selected='selected'>convert</option>
+                <option value='quote'>quote</option>
+              </select>
+			 </td>
+			  <td><button type="button" class="btn btn-default" onclick="addRule();">添加</button></td>
+          </tr>
+         
+        </table>
+		</section>
+	 </div>
+	 
+	  <div >
+	    <section id="RulesList">		  
+		  
+		</section>
+	 </div>
+	
+
+
+   </div>
+
+    <script type="text/javascript">
+        $(window).load(function() {
+            getServices();
+			getRules();
+			GetIP();
+			GetCAgentIP();
+        });
+       
+    </script>
+
+</body>
+</html>

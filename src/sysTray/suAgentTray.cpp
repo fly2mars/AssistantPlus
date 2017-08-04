@@ -97,7 +97,7 @@ LRESULT CALLBACK HiddenWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		    {
 			std::string strMonitorUrl = "http://" +
 				CServerSet::gOnly().GetIP() + ":" +
-				CServerSet::gOnly().GetOption().GetOption(L"Serverport");
+				CServerSet::gOnly().GetOption().GetOption("Serverport");
 			ShellExecute(0, 0, strMonitorUrl.c_str(), 0, 0, SW_SHOW);
 			return 0;
 		    }

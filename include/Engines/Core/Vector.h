@@ -59,7 +59,7 @@ public:
             delete[] _Data;
         }
     }
-    
+
     //
     // Memory
     //
@@ -232,7 +232,7 @@ public:
 #endif
         return _Data[k];
     }
-    __forceinline T& operator [] (int k) 
+    __forceinline T& operator [] (int k)
     {
 #ifdef VECTOR_DEBUG
         if(k < 0 || k >= int(_Length))
@@ -337,7 +337,7 @@ public:
             std::sort(_Data, _Data + _Length, Function);
         }
     }
-    void Clear(const T &T);
+    void Clear(const T &Value);
 
     //
     // Query
@@ -351,32 +351,7 @@ public:
     unsigned int Hash32() const;
     unsigned __int64 Hash64() const;
 
-    //
-    // File
-    //
-    void SaveToASCIIFile(const suString &Filename)
-    {
-        ofstream File(Filename.CString());
-        PersistentAssert(!File.fail(), "Failed to open file");
-        File << _Length << endl;
-        for(unsigned int Index = 0; Index < _Length; Index++)
-        {
-            File << _Data[Index] << '\n';
-        }
-    }
-
-    void LoadFromASCIIFile(const suString &Filename)
-    {
-        ifstream File(Filename.CString());
-        PersistentAssert(!File.fail(), "Failed to open file");
-        unsigned int Length;
-        File >> Length;
-        Allocate(Length);
-        for(unsigned int Index = 0; Index < Length; Index++)
-        {
-            File >> _Data[Index];
-        }
-    }
+  
 
 protected:
     //vector<T> Data;

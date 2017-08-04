@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+	<meta charset="utf-8">
+	<!--This is a HTML5 enabling script-->
+	<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+	<meta name="author" content="Jeremy Keith">
+	<title>信息管理器</title>
+	<!-- Date: 2009-08-30 -->
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/print.css" media="print">
+	<link rel="stylesheet" href="css/gtd.css" media="screen">
+	<script type="text/javascript" src="js/soapclient.js"></script>
+    <script type="text/javascript" src="js/suAgent.js"></script>
+    <script src="js/functions.js"></script>
+    <script src="js/gtdLocalStorage.js"></script>
+	<script>
+	  window.setInterval(monitor,30000);
+		var url1 = "#"
+	  function monitor(){
+	      //iframe_reload("liuyu",url1);
+	      //iframe_reload("tongdf", "http://180.169.68.5:9000/webquery/(4wjop2amwro5hxbkfvmu1ae1)/Query1.aspx");
+      }
+      function supports_html5_storage() {
+	    try {
+	      return 'localStorage' in window && window['localStorage'] !== null;
+	    } catch (e) {
+	      return false;
+	    }
+      }
+
+	</script>
+</head>
+<body>
+<header  id="page_header">
+  <h1>Local Information Center</h1>
+</header>
+<div id="book">
+		<article id="page1">
+           <div class="inner">
+				<header><h2>Link & List</h2></header>
+				<ul>
+						<li><a href="http://mh.shu.edu.cn/irj/portal">信息系统</a></li>
+						<li><a href="http://www.lib.shu.edu.cn">图书馆</a><a href="http://202.120.121.229:8331/pds?func=load-login&calling_system=aleph&url=http://202.120.121.228:8991/F">续借</a>&<a href="http://202.120.121.229:8331/V/35C68KVL2QSJILY1N5XHXBFV9T4J1D1BEM417PACJ2QNMFMV76-18469?&pds_handle=GUEST">数据库</a></li>
+						<li><a href="http://172.31.1.60/">WIFI 登录</a></li>
+						<li><a href="http://graphics.stanford.edu/~mdfisher/">Matt's website</a></li>
+						<li><a href="http://202.121.199.182:8080/gmis/login.aspx">研究生管理系统</a></li>
+						<li><a href="http://cj.shu.edu.cn/">教务管理系统</a></li>
+						<li><a href="http://www.xk.shu.edu.cn/">学生选课系统</a></li>
+						<li><a href="http://www.most.gov.cn/tztg/index.htm">科技部</a></li>
+
+		        </ul>
+			</div>
+		</article>
+
+		<article id="page2">
+			<div class="inner">
+				<header><h2>Agent Status</h2></header>
+				<dl>
+					<dt><input type="button" value="Shutdown" onclick="shutdownServer();" /></dt>
+					<dt><input type="button" value="SaveCurrentProfit" onclick="saveProfitToDB();" /></dt>
+					<dd>Used to group a set of h1–h6 elements when the heading has multiple levels, such as subheadings, alternative titles, or taglines.</dd>
+					<dd><meter value=0.5></meter></dd>
+				</dl>
+			</div>
+		</article>
+
+		<article id="page4">
+			<div class="inner">
+				<header><h2>Agent Map</h2></header>
+				<div>
+	<form action="http://www.google.com/search" method="get">
+	<input type="text" name="q" size="20" maxlength="255" value="" />
+	<input type="submit" name="btnG" value="Google" />
+	</form>
+	</div>
+			</div>
+		</article>
+
+		<article id="page5">
+			<div class="inner">
+				<header><h2>Manage Rule</h2></header>
+				<dl>
+					<dt><code>audio</code></dt>
+					<dd><pre><code>&lt;audio src=&quot;audio.mp3&quot;
+controls preload=&quot;none&quot;
+autoplay loop&gt;
+&lt;/audio&gt;</code></pre></dd>
+					<dt><code>video</code></dt>
+					<dd><pre><code>&lt;video width=360 height=240
+controls poster=&quot;image.jpg&quot;&gt;
+&lt;source src=&quot;movie.mp4&quot;
+type=&quot;video/mp4&quot;&gt;
+&lt;source src=&quot;movie.ogg&quot;
+type=&quot;video/ogg&quot;&gt;
+&lt;/video&gt;</code></pre></dd>
+				</dl>
+				<p>Use either the <code>src</code> attribute or <code>source</code> elements.</p>
+			</div>
+		</article>
+
+		<article id="page2">
+					<div class="inner">
+						<header> <select id="slSearchCategory" class="textBox" onchange="loadNotes()" style="width: 100px">
+						 <div class="headerDiv">
+						            <option value="" selected="selected">All ToDo</option>
+						            <option value="Personal">Personal</option>
+						            <option value="Work">Work</option>
+						            <option value="Temp">Temp</option>
+						        </select>
+					    </header>
+						 <textarea id="txtToDo" class="textBox" rows="2" cols="20" style="width: 180px">to do ...</textarea>
+						        <input type="button" onclick="SaveNotes()" name="Submit" class="submitButton" title="Submit"
+						            value="+" />
+						    </div>
+						    <div id="displayArea">
+                       </div>
+					</div>
+		</article>
+</div>
+<div id="panel">
+		<article id="Monitor1" style="height:1165px; width:400px;">
+					<div class="inner">
+						<iframe id="liuyu" src="" style=" border-width:0 " width="640" height="1160" frameborder="0" scrolling="no"></iframe>
+					</div>
+		</article>
+
+		<article id="Monitor2" style="height:475px;">
+			<div class="inner">
+				<iframe id="tongdf" src="http://180.169.68.5:9000/webquery/(4wjop2amwro5hxbkfvmu1ae1)/Query1.aspx" style=" border-width:0 " width="640" height="480" frameborder="0" scrolling="no"></iframe>
+			</div>
+		</article>
+
+		<article id="page8" style=" width:680px;height:475px;">
+			<div class="inner">
+				<iframe id="yy" src="http://www.most.gov.cn/tztg/index.htm" style=" border-width:0 " width="640" height="480" frameborder="0" scrolling="no"></iframe>
+			</div>
+		</article>
+</div>
+    <footer><p>This document is a work in progress. </p></footer>
+</body>
+</html>

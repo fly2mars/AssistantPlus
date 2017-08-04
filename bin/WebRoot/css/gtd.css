@@ -1,0 +1,36 @@
+/* @group General styles */
+
+.submitButton
+{
+    font-size: 10px;
+    height: 36px;  
+    
+    float:right;
+}
+.headerDiv
+{
+    height: auto;            
+    background: #C15D63;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 10px;
+}
+.textBox
+{
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    float: left;
+}
+
+.displayToDo
+{
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    height: Auto;
+    width: 210px;
+    color: #ffffff;
+    float: left;
+    vertical-align: top;
+    margin: 10px;
+    padding: 2px;
+}

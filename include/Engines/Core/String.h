@@ -320,9 +320,15 @@ public:
     int FindLastIndex(char Seperator) const;
     suString FindAndReplace(const suString &Find, const suString &Replace) const;
     suString MakeLowercase() const;
+	suString MakeUppercase() const;
     suString RemoveSuffix(const suString &EndCandidate) const;
     suString RemovePrefix(const suString &StartCandidate) const;
-    UINT Hash() const;
+	suString FindExtension() const;   //find file extension, added by Yao
+	suString SubString(int iStart, int nLen);
+	UINT Hash() const;
+
+	
+
     
     //
     // Assignment

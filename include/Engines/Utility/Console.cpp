@@ -24,16 +24,24 @@ namespace Console
 
     void AdvanceLine()
     {
+#ifdef WIN32
         WriteLine("");
+#elif __linux
+		printf("\r                       ");
+		printf("\r");
+#endif
     }
 
     void WriteLine(const suString &S)
     {
+#ifdef WIN32
         HANDLE StdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         DWORD BytesWritten;
         suString FinalString = S + suString("\n");
         WriteConsole(StdHandle, FinalString.CString(), FinalString.Length(), &BytesWritten, NULL);
-
+#elif __linux
+		std::cout << S.CString() << std::endl;
+#endif
 #ifdef CONSOLE_TO_FILE   
         ConsoleFile << S << endl;
         ConsoleFile.flush();
@@ -43,6 +51,7 @@ namespace Console
 
     void OverwriteLine(const suString &S)
     {
+#ifdef WIN32
         const UINT ConsoleWidth = 79;
         HANDLE StdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_SCREEN_BUFFER_INFO CursorInfo;
@@ -58,6 +67,10 @@ namespace Console
         }
         FinalString.PushEnd('\n');
         WriteConsole(StdHandle, FinalString.CString(), FinalString.Length(), &BytesWritten, NULL);
+#elif __linux
+		printf("\r                       ");
+		std::cout << S.CString() << std::endl;
+#endif
 #ifdef CONSOLE_TO_FILE   
         ConsoleFile << S << endl;
         ConsoleFile.flush();
@@ -66,9 +79,13 @@ namespace Console
 
     void WriteString(const suString &S)
     {
+#ifdef WIN32
         HANDLE StdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         DWORD BytesWritten;
         WriteConsole(StdHandle, S.CString(), S.Length(), &BytesWritten, NULL);
+#elif __linux
+		std::cout << S.CString();
+#endif
 #ifdef CONSOLE_TO_FILE   
         ConsoleFile << S;
         ConsoleFile.flush();

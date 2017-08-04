@@ -39,7 +39,11 @@ void SignalError(const suString &Description);
 //
 // Release versions
 //
-#define SignalError(x)        {__debugbreak(); ExitProcess(1);}
+//https://stackoverflow.com/questions/17516855/portable-equivalent-of-debugbreak
+#define BREAKPOINT asm("int $3")
+//#define SignalError(x)        __debugbreak(); ExitProcess(1);}
+
+#define SignalError(x)        {BREAKPOINT; exit(1);}
 
 #ifndef Assert
 #define Assert(x, y)

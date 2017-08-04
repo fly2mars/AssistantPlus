@@ -2,7 +2,11 @@
 
 // \file timing.h
 //
-#include <time.h>
+#if !defined(SU_NOTHREADS) && defined(WIN32)
+#include <Engines/System/Win32/fastTiming.h>
+#elif defined(__linux__)
+#include <Engines/System/unix/fastTiming.h>
+#else
 
 /*\class suElapsedTime
 \biref Elapsed time computation.
@@ -24,4 +28,6 @@ public:
 private:
   clock_t starting_;  // Starting time
 };
+
+#endif
 

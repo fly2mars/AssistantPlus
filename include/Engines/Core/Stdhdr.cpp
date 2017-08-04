@@ -6,11 +6,18 @@ Collection of very useful functions/macros/constants.
 See Stdhdr.h for a more thorough definition/explination of all constants/functions defined here.
 */
 
+#ifdef __linux__
+#include <unistd.h>
+#elif WIN32
+#include <direct.h>
+#endif
+
 using namespace std;
 namespace Utility
 {
     void CopyStringToClipboard(const suString &S)
     {
+#ifdef WIN32
         OpenClipboard(NULL);
         EmptyClipboard();
 
@@ -25,12 +32,13 @@ namespace Utility
             SetClipboardData(CF_TEXT, GlobalHandle);
         }
         CloseClipboard();
+#endif
     }
 
     suString LoadStringFromClipboard()
     {
         suString Result;
-
+#ifdef WIN32
         OpenClipboard(NULL);
         HGLOBAL GlobalHandle = GetClipboardData(CF_TEXT);
         if(GlobalHandle != NULL)
@@ -45,10 +53,12 @@ namespace Utility
         CloseClipboard();
 
         return Result;
+#endif
     }
 
     void GetClipboardLines(suVector<suString> &Output)
     {
+#ifdef WIN32
         Output.FreeMemory();
 
         OpenClipboard(NULL);
@@ -65,7 +75,79 @@ namespace Utility
             }
         }
         CloseClipboard();
+#endif
     }
+
+	void GetFilesFromDir(suString path, suVector<suString> &fileList, suString extFilter)
+	{
+#ifdef __linux__
+		//std::cout << suString << std::endl;
+#elif WIN32
+
+		struct _finddata_t fs;    //!< file struct
+		_chdir(path.CString());
+		long handle = _findfirst(extFilter.CString(), &fs);
+
+		if (GetFileAttributes(fs.name) & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			//is directory
+			if (*fs.name != '.')
+			{
+				Console::WriteLine("No dll in the path");
+				return;;
+			}
+		}
+		else
+		{
+			fileList.ReSize(0);
+			try
+			{
+				suString filename = fs.name;
+				fileList.PushEnd(filename);
+			}
+			catch (std::bad_exception e)
+			{
+				cout << e.what() << endl;
+			}
+
+		}
+
+		while (!_findnext(handle, &fs))
+		{
+			if (GetFileAttributes(fs.name) & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				//is directory
+				if (*fs.name != '.')
+				{
+					return;
+				}
+			}
+			else
+			{
+				//Load Dll Info
+				try
+				{
+					suString filename = fs.name;
+					fileList.PushEnd(filename);
+				}
+				catch (std::bad_exception e)
+				{
+					cout << e.what() << endl;
+				}
+			}
+		}
+
+		_findclose(handle);
+		//_chdir("..");
+
+#elif __APPLE__
+
+#elif __unix__ // all unixes not caught above
+		// Unix
+#elif defined(_POSIX_VERSION)
+		// POSIX
+#endif
+	}
 
     bool FileExists(const suString &Filename)
     {
@@ -202,11 +284,15 @@ namespace Utility
 
     UINT GetFileSize(const suString &Filename)
     {
+#ifdef WIN32
         BOOL Success;
         WIN32_FILE_ATTRIBUTE_DATA Info;
         Success = GetFileAttributesEx(Filename.CString(), GetFileExInfoStandard, (void*)&Info);
         PersistentAssert(Success && Info.nFileSizeHigh == 0, suString("GetFileAttributesEx failed on ") + Filename);
         return Info.nFileSizeLow;
+#elif __linux
+		return 1;
+#endif
     }
 
     void GetFileData(const suString &Filename, suVector<BYTE> &Output)
@@ -229,12 +315,33 @@ namespace Utility
 
     void MessageBox(const char *suString)
     {
-        ::MessageBox(NULL, suString, "Data Report", MB_OK);
+#ifdef __linux__
+		std::cout << *suString << std::endl;
+#elif WIN32
+		::MessageBox(NULL, suString, "Data Report", MB_OK);
+#elif __APPLE__
+
+#elif __unix__ // all unixes not caught above
+		// Unix
+#elif defined(_POSIX_VERSION)
+		// POSIX
+#endif
+
     }
 
     void MessageBox(const suString &S)
     {
-        ::MessageBox(NULL, S.CString(), "Data Report", MB_OK);
+#ifdef __linux__
+		std::cout << S.CString() << std::endl;
+#elif WIN32
+		::MessageBox(NULL, S.CString(), "Data Report", MB_OK);
+#elif __APPLE__
+
+#elif __unix__ // all unixes not caught above
+		// Unix
+#elif defined(_POSIX_VERSION)
+		// POSIX
+#endif
     }
 
     //
@@ -343,6 +450,8 @@ namespace Utility
     // Create a process with the given command line, and wait until it returns
     int RunCommand(const suString &ExecutablePath, const suString &CommandLine, bool Block)
     {
+#ifdef WIN32
+
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
 
@@ -378,6 +487,7 @@ namespace Utility
         // Close process and thread handles.
         CloseHandle( pi.hProcess );
         CloseHandle( pi.hThread );
+#endif // WIN32
         return 0;
     }
 }
@@ -466,7 +576,11 @@ void Assert(bool Statement, const suString &Description)
 
 void PersistentSignalError(const char *Description)
 {
-    MessageBox(NULL, Description, "Fatal Problem Encountered", MB_OK);
+#ifdef WIN32
+	MessageBox(NULL, Description, "Fatal Problem Encountered", MB_OK);
+#else
+	Utility::MessageBox(Description);
+#endif
 #ifdef _DEBUG
     __asm int 3;
 #endif
@@ -475,7 +589,11 @@ void PersistentSignalError(const char *Description)
 
 void PersistentSignalError(const suString &Description)
 {
+#ifdef WIN32
     MessageBox(NULL, Description.CString(), "Fatal Problem Encountered", MB_OK);
+#else
+	Utility::MessageBox(Description);
+#endif
 #ifdef _DEBUG
     __asm int 3;
 #endif
@@ -486,7 +604,11 @@ void PersistentAssert(bool Statement, const char *Description)
 {
     if(!Statement)
     {
-        MessageBox(NULL, Description, "Fatal Problem Encountered", MB_OK);
+#ifdef WIN32
+		MessageBox(NULL, Description, "Fatal Problem Encountered", MB_OK);
+#else
+		Utility::MessageBox(Description);
+#endif
 #ifdef _DEBUG
         __asm int 3;
 #endif
@@ -498,7 +620,11 @@ void PersistentAssert(bool Statement, const suString &Description)
 {
     if(!Statement)
     {
-        MessageBox(NULL, Description.CString(), "Fatal Problem Encountered", MB_OK);
+#ifdef WIN32
+		MessageBox(NULL, Description.CString(), "Fatal Problem Encountered", MB_OK);
+#else
+		Utility::MessageBox(Description);
+#endif
 #ifdef _DEBUG
         __asm int 3;
 #endif

@@ -14,31 +14,29 @@
 #endif
 
 
-#include "win32/fastTiming.h"
-
 // ************************
 // *                      *
-// *  suHiResElapsedTime  *
+// *  suElapsedTime  *
 // *                      *
 // ************************
 
-suHiResElapsedTime::suHiResElapsedTime () : starting_ (0)
+suElapsedTime::suElapsedTime () : starting_ (0)
 {
   reset ();
 }
 
 
-double suHiResElapsedTime::usec () const
+double suElapsedTime::usec () const
 {
   return sec() * 1000000.;
 }
 
-double suHiResElapsedTime::msec () const
+double suElapsedTime::msec () const
 {
   return sec() * 1000;
 }
 
-double suHiResElapsedTime::sec () const
+double suElapsedTime::sec () const
 {
   LARGE_INTEGER t, freq;
   QueryPerformanceCounter (&t);
@@ -48,7 +46,7 @@ double suHiResElapsedTime::sec () const
 }
 
 
-void suHiResElapsedTime::reset ()
+void suElapsedTime::reset ()
 {
   LARGE_INTEGER t;
   QueryPerformanceCounter (&t);

@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 //
 // VS 8+ includes some bounds checking even in debug mode.  This include disable this and
 // enables full optimization.

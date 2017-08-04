@@ -6,8 +6,8 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>E:/code/Assistant+/bin/Assistant+.exe</LocalDebuggerCommand>
-    <LocalDebuggerWorkingDirectory>E:/code/Assistant+/bin/</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>E:/git/AssistantPlus/bin/Assistant+.exe</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>E:/git/AssistantPlus/bin/</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
