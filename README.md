@@ -14,9 +14,9 @@ Most 3rd party libraries are integrated in the source code. The needed libraries
 * [cmake 3.0 or newer](http://www.cmake.org)
 * [boost](http://www.boost.org)
 * [tinyxml2](http://www.grinninglizard.com/tinyxml2/)
-* Redis  [windows](https://github.com/ServiceStack/redis-windows),  [linux]()
+* Redis  [windows](https://github.com/ServiceStack/redis-windows),  [linux](https://redis.io)
 ### Windows
-Use CMakeGUI to generation visual studio project.
+Use CMakeGUI to generate visual studio project.
 
 ### Linux
 
@@ -32,7 +32,7 @@ make
 
 Assistant+ uses a xml file to save configuation, and uses redis to store running information.
 
-1. Configuring
+1. Configuration
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <setting>

@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 		
 		if (!CServerSet::gOnly().init())
 		{
-			Utility::MessageBox("ÇëÏÈÆô¶¯Redis£¡");
+			Utility::MessageBox("Please start Redis first!");
 			server.stop();
 			CServerSet::gOnly().gClear();
 			server_thread.join(); //wait until server is done
