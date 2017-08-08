@@ -534,7 +534,7 @@ void SignalError(const char *Description)
 {
     MessageBox(NULL, Description, "Fatal Problem Encountered", MB_OK);
 #ifdef _DEBUG
-    __asm int 3;
+    //__asm int 3;
 #endif
     ExitProcess(1);
 }
@@ -543,7 +543,7 @@ void SignalError(const suString &Description)
 {
     MessageBox(NULL, Description.CString(), "Fatal Problem Encountered", MB_OK);
 #ifdef _DEBUG
-    __asm int 3;
+    //__asm int 3;
 #endif
     ExitProcess(1);
 }
@@ -554,7 +554,7 @@ void Assert(bool Statement, const char *Description)
     {
         MessageBox(NULL, Description, "Fatal Problem Encountered", MB_OK);
 #ifdef _DEBUG
-        __asm int 3;
+        //__asm int 3;
 #endif
         ExitProcess(1);
     }
@@ -566,7 +566,7 @@ void Assert(bool Statement, const suString &Description)
     {
         MessageBox(NULL, Description.CString(), "Fatal Problem Encountered", MB_OK);
 #ifdef _DEBUG
-        __asm int 3;
+        //__asm int 3;
 #endif
         ExitProcess(1);
     }
@@ -582,7 +582,7 @@ void PersistentSignalError(const char *Description)
 	Utility::MessageBox(Description);
 #endif
 #ifdef _DEBUG
-    __asm int 3;
+    //__asm int 3;
 #endif
     ExitProcess(1);
 }
@@ -595,7 +595,7 @@ void PersistentSignalError(const suString &Description)
 	Utility::MessageBox(Description);
 #endif
 #ifdef _DEBUG
-    __asm int 3;
+    //__asm int 3;
 #endif
     ExitProcess(1);
 }
@@ -610,7 +610,7 @@ void PersistentAssert(bool Statement, const char *Description)
 		Utility::MessageBox(Description);
 #endif
 #ifdef _DEBUG
-        __asm int 3;
+        //__asm int 3;
 #endif
         ExitProcess(1);
     }
@@ -626,7 +626,7 @@ void PersistentAssert(bool Statement, const suString &Description)
 		Utility::MessageBox(Description);
 #endif
 #ifdef _DEBUG
-        __asm int 3;
+        //__asm int 3;
 #endif
         ExitProcess(1);
     }
