@@ -117,7 +117,19 @@ namespace SU {
 
 		return result;
 	}
+	_tString GetModuleFileName()
+	{
+		char arg1[20];
+		char exepath[PATH_MAX + 1] = { 0 };
 
+		sprintf(arg1, "/proc/%d/exe", getpid());
+		readlink(arg1, exepath, 1024);
+		suString fullPath = _tString(exepath).c_str();
+		int idx = fullPath.FindLastIndex('/');
+		if (idx != -1)
+			return _tString(fullPath.SubString(idx + 1, fullPath.Length() - idx - 1).CString());
+
+	}
 
 	_tString GetModuleDir()
 	{

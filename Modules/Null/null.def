@@ -1,0 +1,6 @@
+LIBRARY	Null
+DESCRIPTION  'Simple Test Module'
+EXPORTS
+    ; Explicit exports can go here
+    create
+    createEx

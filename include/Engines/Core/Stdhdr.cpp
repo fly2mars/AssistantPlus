@@ -8,6 +8,7 @@ See Stdhdr.h for a more thorough definition/explination of all constants/functio
 
 #ifdef __linux__
 #include <unistd.h>
+#include <dirent.h>
 #elif WIN32
 #include <direct.h>
 #endif
@@ -80,8 +81,24 @@ namespace Utility
 
 	void GetFilesFromDir(suString path, suVector<suString> &fileList, suString extFilter)
 	{
+	
 #ifdef __linux__
-		//std::cout << suString << std::endl;
+		//note: not support *.*
+		suString ext = extFilter.FindExtension();
+		suString extAll = ".*";
+		struct dirent *dp;
+		DIR *dirp = opendir(".");
+
+		while ((dp = readdir(dirp)) != NULL) {
+			suString file_name = dp->d_name;
+			suString curExt = file_name.FindExtension();
+
+			if (curExt == ext) {
+				fileList.PushEnd(file_name);
+			}
+		}
+		closedir(dirp);
+
 #elif WIN32
 
 		struct _finddata_t fs;    //!< file struct

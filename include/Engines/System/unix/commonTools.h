@@ -30,7 +30,7 @@ namespace SU {
 
 	//https://stackoverflow.com/questions/1528298/get-path-of-executable
 	///HMODULE  GetCurrentModule();                              //!<Get handle of current EXE/DLL 
-	//_tString GetModuleFileName(HINSTANCE hModule = NULL);
+	_tString GetModuleFileName();
 	_tString GetModuleDir();            //!<获取执行程序目录
 	_tString GetCurrentDirectory();      //!<获取运行时目录
 

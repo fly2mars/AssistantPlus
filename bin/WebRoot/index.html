@@ -6,7 +6,7 @@
   <meta http-equiv="Content-type" content="text/html; charset=gb2312" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Agent¹ÜÀí¡£">
+  <meta name="description" content="Agentï¿½ï¿½ï¿½ï¿½ï¿½">
   <meta name="author" content="Yuan">
 
   <title></title>
@@ -24,7 +24,7 @@
    <script src="js/doc.js"></script>
 	<script type="text/javascript">
 	//var url = "http://127.0.0.1:5001/null";
-		
+
 
 	function ReplaceWithServiceUrl(serviceName)
 	{
@@ -43,7 +43,7 @@
 		SOAPClient.invoke(url_, "run", pl, true, HelloWorld_callBack);
 	}
 	function HelloWorld_callBack(r)
-	{	   
+	{
 		alert(r);
 	}
 
@@ -76,7 +76,7 @@
 	}
 
 	// DEMO 3-1
-	
+
 	// DEMO 11
 	function GetSoapResponse()
 	{
@@ -87,7 +87,7 @@
 	}
 	function GetSoapResponse_callBack(r, soapResponse)
 	{
-	    alert("Ê§Ð§º¯Êý£¬ÐÞ¸ÄÖÐ..");
+	    alert("Ê§Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½..");
 		alert(soapResponse.xml);
 	}
 
@@ -98,10 +98,10 @@
 		if(d != null)
 			d.className = (d.className == "h") ? "s" : "h";
 	}
-	
+
 	////////////////////////////////////////////Agent Javascript
 	function GetIP()
-	{				 
+	{
 			var pl = new SOAPClientParameters();
 			pl.add("cmd", "SYS_IP");
 			var url_ = ReplaceWithServiceUrl("getVar");
@@ -111,9 +111,9 @@
 	{
 		document.getElementById("SYS_IP").innerHTML = r;
 	}
-	
+
 	function GetCAgentIP()
-	{				 
+	{
 			var pl = new SOAPClientParameters();
 			pl.add("cmd", "CAGENT_IP");
 			var url_ = ReplaceWithServiceUrl("getVar");
@@ -129,7 +129,7 @@
 	{
 	    var pl = new SOAPClientParameters();
 		pl.add("cmd", "SERVICE_LIST");
-		var url_ = ReplaceWithServiceUrl("ServerStatus");		
+		var url_ = ReplaceWithServiceUrl("ServerStatus");
 		SOAPClient.invoke(url_, "run", pl, true, listVirtualServiceCB);
 	}
 	//Query rules
@@ -137,98 +137,98 @@
 	{
 		var pl = new SOAPClientParameters();
 		var url_ = ReplaceWithServiceUrl("ServerStatus");
-		pl.add("cmd", "RULE_LIST");			
+		pl.add("cmd", "RULE_LIST");
 		SOAPClient.invoke(url_, "run", pl, true, listRulesCB);
 	}
 	function delRule(ruleId)
 	{
 	    var strCMD = "DEL_RULE&" + ruleId;
         var pl = new SOAPClientParameters();
-		pl.add("cmd", strCMD); 
-		var url_ = ReplaceWithServiceUrl("ServerStatus");						
-		SOAPClient.invoke(url_, "run", pl, true, delRuleCB);	
+		pl.add("cmd", strCMD);
+		var url_ = ReplaceWithServiceUrl("ServerStatus");
+		SOAPClient.invoke(url_, "run", pl, true, delRuleCB);
 	}
 	function delRuleCB(r)
 	{
 	    console.log(r);
-	    if(r == 'OK')  getRules();		
+	    if(r == 'OK')  getRules();
 	}
 	function addRule()
 	{
 	    var ruleName = $("#ruleName").val();
 		//var cKeyDesc=$("#sysVariable").find("option:selected").text();
-		var cKey    =$("#sysVariable").find("option:selected").val(); 
+		var cKey    =$("#sysVariable").find("option:selected").val();
         var cValue  =$("#cDescValue").val();
-		var aKey = $("#actType").find("option:selected").val(); 
-		var aValue = $("#actValue").find("option:selected").val(); 
-		
+		var aKey = $("#actType").find("option:selected").val();
+		var aValue = $("#actValue").find("option:selected").val();
+
 		if(ruleName.length == 0 ) ruleName = 'MatchRule';
-        
+
         //condition canbe more than one
 		var jsonCond = [{
 		   "cond_key" : cKey,
 		   "cond_value" : cValue
 		}];
-		
+
 		var jsonRule = {
 		   "name" : ruleName,
            "condition" : jsonCond,
            "actionType" : aKey,
 		   "action" : aValue
-         };		 
+         };
 
-        var strJson = JSON.stringify(jsonRule);		 
+        var strJson = JSON.stringify(jsonRule);
 		//Add a new rule
 		var pl = new SOAPClientParameters();
 		pl.add("cmd", strJson);
-		var url_ = ReplaceWithServiceUrl("ServerStatus");		
+		var url_ = ReplaceWithServiceUrl("ServerStatus");
 		SOAPClient.invoke(url_, "run", pl, true, addRuleCB);
-		
+
 		console.log(strJson);
-		//console.log(cKey);		
+		//console.log(cKey);
 	}
 	function addRuleCB(r)
 	{
 	   if(r == 'OK')
-	   { 
+	   {
 	     //update rule list
 		 getRules();
 		 return;
 	   }
-	   alert("Ìí¼ÓÊ§°Ü£¡");
-	   
+	   alert("ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½");
+
 	}
 	function testReturn(r)
 	{
 		console.log(r);
 	}
-	
+
 	//Virtural service list
 	function listVirtualServiceCB(r)
-	{ 	
-	    //read service list from Agent	
+	{
+	    //read service list from Agent
 		var simRes =r;
 		//var simRes = '[{"name":"Fem"}, {"name":"Convert"}, {"name":"FOOM"}]';
 		//var simRes = '[{"name":"AGENTMONITOR"},{"name":"CONVERT"},{"name":"EXECUTOR"},{"name":"GETVAR"},{"name":"NULL"},{"name":"ORDERLISTENER"},{"name":"QUERYORDER"},{"name":"QUOTE"},{"name":"RULEENGINE"},{"name":"SERVERSTATUS"},{"name":"SETVAR"},{"name":"TASKQUERY"},{"name":"TASKSUBMIT"},{"name":"TRANSLATOR"}]';
 		var jsonArr = $.parseJSON(simRes);
-		
+
 		var jsonData = {};
-		
-		var sHtml="";		
+
+		var sHtml="";
 		for(var i=0; i<jsonArr.length; i++)
-		{ 
+		{
 		  sHtml += '<li><i class="' + 'icon-user' + '"></i>' +  jsonArr[i].name + '</li>';
-		  
+
 		  jsonData[jsonArr[i].name] = jsonArr[i].name;
-		}		
+		}
 	    document.getElementById("listVS").innerHTML = sHtml ;
 		//document.write(sHtml);
 		//update virtual service number
-		vsnumHtml = jsonArr.length + "¸öÖÆÔìÏà¹ØÐéÄâ·þÎñ";
-		
+		vsnumHtml = jsonArr.length + "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+
 		document.getElementById("vs_num").innerHTML = vsnumHtml;
-		
-		
+
+
 		addActList(jsonData);
 	}
 	//Add service to action select opnion
@@ -247,11 +247,11 @@
            $el.append($("<option></option>").attr("value", value).text(key));
         });
 	}
-	
-	//List rules	
+
+	//List rules
 	function listRulesCB(r)
-	{ 
-	    //read service list from Agent	
+	{
+	    //read service list from Agent
 		var simRes = r;
 		/*
         var simRes = '[{"name": "rule1", "id": "306451129", "actionType": "run", "action": "convert", \
@@ -261,26 +261,26 @@
 		*/
 		//console.log(r);
 		var jsonArr = $.parseJSON(r);
-		var sHtml = ' <h2>¹æÔòÁÐ±í</h2><table class="table"><tr><th class="col-md-3">¹æÔòÃû³Æ</th><th>Ìõ¼þ</th><th>ÐÐÎª</th><th>±à¼­</th><th>É¾³ý</th></tr>';
-       		
+		var sHtml = ' <h2>ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½</h2><table class="table"><tr><th class="col-md-3">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½Îª</th><th>ï¿½à¼­</th><th>É¾ï¿½ï¿½</th></tr>';
+
 		for(var i=0; i<jsonArr.length; i++)
 		{ sHtml += '<tr>';
 		  sHtml +=  '<td>' + jsonArr[i].name + '</td>';
 		  sHtml +=  '<td>';
-         	 
+
 		  for(var j=0; j<jsonArr[i].condition.length; j++)
 		  {
-		    sHtml +=  jsonArr[i].condition[j].cond_key + '=' + jsonArr[i].condition[j].cond_value + ' ';			
-		  }	
+		    sHtml +=  jsonArr[i].condition[j].cond_key + '=' + jsonArr[i].condition[j].cond_value + ' ';
+		  }
 		  sHtml += '</td><td>' + jsonArr[i].actionType + ' ' + jsonArr[i].action + '</td>';
-		  sHtml += '<td><button type="button" class="btn btn-default" onclick=";">±à¼­</button></td>';
-		  sHtml += '<td><button type="button" class="btn btn-default" onclick="delRule(\'' + jsonArr[i].id  + '\');">É¾³ý</button></td>';
-		  
+		  sHtml += '<td><button type="button" class="btn btn-default" onclick=";">ï¿½à¼­</button></td>';
+		  sHtml += '<td><button type="button" class="btn btn-default" onclick="delRule(\'' + jsonArr[i].id  + '\');">É¾ï¿½ï¿½</button></td>';
+
 		  sHtml += '</tr>';
 		}
-		
+
 		sHtml += '</table>';
-		
+
 		//console.log(sHtml);
 		//document.write(sHtml);
 	    document.getElementById("RulesList").innerHTML = sHtml ;
@@ -293,27 +293,27 @@
     <nav id="navbar" class="navbar navbar-inverse navbar-fixed-left navbar-collapsed" role="navigation">
       <div class="navbar-header">
 
-        <a class="navbar-brand" href="">Agent¼à¿ØÃæ°å</a>
+        <a class="navbar-brand" href="">Agentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>
       </div>
       <div class="collapse navbar-collapse" id="navbar-collapse">
         <ul class="nav navbar-nav collapsed">
-          <li class="nav-heading">»ù±¾ÐÅÏ¢</li>
-          <li><a href="#suAgentStatus">ÕûÌå¸ÅÀÀ</a></li>
-          <li><a href="#Resources">×ÊÔ´ÁÐ±í</a></li>          
+          <li class="nav-heading">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢</li>
+          <li><a href="#suAgentStatus">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+          <li><a href="#Resources">ï¿½ï¿½Ô´ï¿½Ð±ï¿½</a></li>
         </ul>
 		 <ul class="nav navbar-nav collapsed">
-	            <li class="nav-heading">¹æÔò¹ÜÀí</li>
-	            <li><a href="#">¹æÔòÁÐ±í</a></li>
-	            <li><a href="#RulesAdd">¹æÔò±à¼­</a></li>
+	            <li class="nav-heading">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</li>
+	            <li><a href="#">ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½</a></li>
+	            <li><a href="#RulesAdd">ï¿½ï¿½ï¿½ï¿½à¼­</a></li>
 	    </ul>
         <ul class="nav navbar-nav collapsed">
-          <li class="nav-heading">¼à¿Ø</li>
-          <li><a href="#">ÖØÆôÓë¸üÐÂ(TODO)</a></li>
-          <li><a href="#">²ÎÊýÉèÖÃ(TODO)</a></li>
+          <li class="nav-heading">ï¿½ï¿½ï¿½</li>
+          <li><a href="#">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(TODO)</a></li>
+          <li><a href="#">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(TODO)</a></li>
         </ul>
-       
+
 	    <ul class="nav navbar-nav collapsed">
-			            <li class="nav-heading">À©Õ¹Ó¦ÓÃ</li>
+			            <li class="nav-heading">ï¿½ï¿½Õ¹Ó¦ï¿½ï¿½</li>
 			            <li><a href="#">TODO</a></li>
 			            <li><a href="#">TODO</a></li>
 	    </ul>
@@ -324,8 +324,8 @@
 
   <div id="main">
     <div class="jumbotron text-center">
-	      <h1>Agent¼àÊÓÆ÷</h1>
-	      <p class='text-muted'>»ùÓÚä¯ÀÀÆ÷µÄ½»»¥½çÃæ£¬ÓÃÓÚ±¾µØºÍÔ¶³ÌAgentÐÐÎª²âÊÔºÍ×´Ì¬¼à¿Ø¡£</p>
+	      <h1>Agentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</h1>
+	      <p class='text-muted'>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½ï¿½Ú±ï¿½ï¿½Øºï¿½Ô¶ï¿½ï¿½Agentï¿½ï¿½Îªï¿½ï¿½ï¿½Ôºï¿½×´Ì¬ï¿½ï¿½Ø¡ï¿½</p>
 	      <br>
 
        <hr>
@@ -333,97 +333,97 @@
 	 <div>
 	     <section id="suAgentStatus">
 
-        <h2>AgentÐÅÏ¢</h2>
-        <p>ÀàÐÍ£º<span id="null_url">×ÊÔ´½Úµã</span></p>
+        <h2>Agentï¿½ï¿½Ï¢</h2>
+        <p>ï¿½ï¿½ï¿½Í£ï¿½<span id="null_url">ï¿½ï¿½Ô´ï¿½Úµï¿½</span></p>
          <table class="table">
           <tr>
-            <th class="col-md-3">ÏîÄ¿</th>
+            <th class="col-md-3">ï¿½ï¿½Ä¿</th>
             <th>×´Ì¬</th>
-			 <th class="col-md-3">ÏîÄ¿</th>
+			 <th class="col-md-3">ï¿½ï¿½Ä¿</th>
             <th>×´Ì¬</th>
           </tr>
           <tr>
             <td><button type="button" class="btn btn-default">ÏµÍ³IP</button></td>
             <td><span id="SYS_IP">127.0.0.1</span></td>
-			<td><button type="button" class="btn btn-default">¾ÛºÏµØÖ·</button></td>
+			<td><button type="button" class="btn btn-default">ï¿½ÛºÏµï¿½Ö·</button></td>
             <td><span id="CAGENT_IP">127.0.0.1</span></td>
           </tr>
           <tr>
-            <td><button type="button" class="btn btn-primary">×ÊÔ´ÊýÁ¿</button></td>
-            <td><span id="vs_num">10¸öÖÆÔìÏà¹ØÐéÄâ·þÎñ</span></td>
-			<td><button type="button" class="btn btn-info">ÖÜ±ß×ÊÔ´</button></td>
-            <td>Î´¼ì²âµ½</td>
+            <td><button type="button" class="btn btn-primary">ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½</button></td>
+            <td><span id="vs_num">10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</span></td>
+			<td><button type="button" class="btn btn-info">ï¿½Ü±ï¿½ï¿½ï¿½Ô´</button></td>
+            <td>Î´ï¿½ï¿½âµ½</td>
           </tr>
           <tr>
-            <td><button type="button" class="btn btn-warning">×ÊÔ´ÀûÓÃ</button></td>
+            <td><button type="button" class="btn btn-warning">ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½</button></td>
             <td>15%</td>
 			  <td><button type="button" class="btn btn-danger">ÏµÍ³×´Ì¬</button></td>
-            <td>Á¼ºÃ</td>			
+            <td>ï¿½ï¿½ï¿½ï¿½</td>
           </tr>
-          
-            
-			
+
+
+
         </table>
 	 </div>
-	
+
 	 <div>
 	    <section id="Resources">
-		   <h2>×ÊÔ´ÁÐ±í</h2>
+		   <h2>ï¿½ï¿½Ô´ï¿½Ð±ï¿½</h2>
 		   <div class="icons example">
-          <ul class='clearfix' id="listVS">		  
-           
+          <ul class='clearfix' id="listVS">
+
 		</ul>
 		</div>
 		</section>
 	 </div>
-	
+
 	 <div>
-	    <section id="RulesAdd">		 		
-		   <h2>Ìí¼Ó¹æÔò</h2>
+	    <section id="RulesAdd">
+		   <h2>ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½</h2>
 		    <table class="table">
              <tr>
-			 <th>¹æÔòÃû³Æ</th>
-             <th >×´Ì¬Ãû³Æ</th>
-             <th>×´Ì¬¸³Öµ</th>
-			  <th>²Ù×÷Àà±ð</th>
-			 <th>²Ù×÷ÊµÌå</th>
+			 <th>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</th>
+             <th >×´Ì¬ï¿½ï¿½ï¿½ï¿½</th>
+             <th>×´Ì¬ï¿½ï¿½Öµ</th>
+			  <th>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</th>
+			 <th>ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½</th>
 			 <th>..</th>
           </tr>
           <tr>
 		    <td><input type='text' name='ruleName' id='ruleName' value='' class='form-control' placeholder='MatchRule' /></td>
             <td>
 			<select name='sysVariable' id='sysVariable' class='form-control'>
-                <option value='description' selected='selected'>¶©µ¥ÃèÊö</option>
+                <option value='description' selected='selected'>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</option>
                 <option value='sysStatus'>ÏµÍ³×´Ì¬</option>
               </select>
 			</td>
-            <td><input type='text' name='cDescValue' id='cDescValue' value='' class='form-control' placeholder='¸³Öµ' /></td>
+            <td><input type='text' name='cDescValue' id='cDescValue' value='' class='form-control' placeholder='ï¿½ï¿½Öµ' /></td>
 			<td>
 			<select name='actType' id='actType' class='form-control'>
-                <option value='run' selected='selected'>ÔËÐÐ</option>
+                <option value='run' selected='selected'>ï¿½ï¿½ï¿½ï¿½</option>
                 <option value='stop'>Í£Ö¹</option>
               </select>
 			</td>
 			 <td>
 			 <select name='actValue' id='actValue' class='form-control'>
-			    <!--ÐéÄâ·þÎñÁÐ±í-->
+			    <!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½-->
                 <option value='convert' selected='selected'>convert</option>
                 <option value='quote'>quote</option>
               </select>
 			 </td>
-			  <td><button type="button" class="btn btn-default" onclick="addRule();">Ìí¼Ó</button></td>
+			  <td><button type="button" class="btn btn-default" onclick="addRule();">ï¿½ï¿½ï¿½</button></td>
           </tr>
-         
+
         </table>
 		</section>
 	 </div>
-	 
+
 	  <div >
-	    <section id="RulesList">		  
-		  
+	    <section id="RulesList">
+
 		</section>
 	 </div>
-	
+
 
 
    </div>
@@ -435,7 +435,7 @@
 			GetIP();
 			GetCAgentIP();
         });
-       
+
     </script>
 
 </body>

@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+project(NULL)
+
+set(SRC_LIST Null.cpp Null.h null.def simpleDll.h simpleDll.cpp )
+
+set(PROJECT_INCLUDE_DIRS ${NULL_SOURCE_DIR}/../../../include)
+set(PROJECT_LIBRARY_DIRS ${NULL_SOURCE_DIR}/../../../lib)
+
+set(PROJECT_BINARY_DIR ${NULL_SOURCE_DIR}/../../bin/Services/App)
+#set the default path for built executables to the "bin"
+#set(EXECUTABLE_OUTPUT_PATH PROJECT_BINARY_DIR)
+
+include_directories(
+  ${PROJECT_INCLUDE_DIRS})
+  
+link_directories( 
+  ${PROJECT_LIBRARY_DIRS})
+  
+  
+ # Allow the developer to select if Dynamic or Static libraries are built
+ OPTION (BUILD_SHARED_LIBS "Build Shared Libraries" ON)
+ # Set the LIB_TYPE variable to STATIC
+ SET (LIB_TYPE STATIC)
+ IF (BUILD_SHARED_LIBS)
+   # User wants to build Dynamic Libraries, so change the LIB_TYPE variable to CMake keyword 'SHARED'
+   SET (LIB_TYPE SHARED)
+ ENDIF (BUILD_SHARED_LIBS)
+ 
+#set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../bin/Services/App)
+ # Create a target for the library
+ADD_LIBRARY(NULL ${LIB_TYPE} ${SRC_LIST})
+
+#target_link_libraries (NULL Win32Tools)
+
+# set the final binary dir
+# get name and location of binary, namecan change with os (cf. ".dll" suffix on windows)
+GET_TARGET_PROPERTY(NULL_BIN_NAME NULL LOCATION)
+# copy bin to binary folder
+ADD_CUSTOM_COMMAND(TARGET NULL
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy ${NULL_BIN_NAME} ${PROJECT_BINARY_DIR}/
+)
+
+#message(STATUS "OpenCV lib:" ${OPENCV_DEBUG_LIBS})
+set(CMAKE_BUILD_TYPE Release)

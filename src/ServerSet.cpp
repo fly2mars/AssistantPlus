@@ -1,3 +1,4 @@
+#include "config.h"
 #include "ServerSet.h"
 
 #include <iostream>
@@ -103,10 +104,10 @@ suService*   CServerSet::LoadModule(string sModuleFilePath)
 {
 	void* serviceModule = dlopen(sModuleFilePath.c_str(), RTLD_NOW | RTLD_GLOBAL);
 
-	if (!serviceModule) throw std::bad_exception(/*dlerror()*/);
+	if (!serviceModule) throw suException(std::string(dlerror() ) );
 	//createModule is a pointer to the create function in the module
 	suService* (*createModule)() = (suService* (*)())dlsym(serviceModule, "create");
-	if (!createModule)  throw std::bad_exception(/*dlerror()*/);
+	if (!createModule)   throw suException(std::string(dlerror()));
 	return createModule();
 }
 //New Added Dll Functions
@@ -125,8 +126,13 @@ void  CServerSet::ReadModules(string sModulesPath)
 	//Using Utility::GetFilesFromDir to make compatible with linux.
 	std::string  strPath = m_strCurDir + m_appRootDir + "/";      
 	suVector<suString> dll_path_list;
+	//todo: write linux version
+#ifdef WIN32
 	Utility::GetFilesFromDir(strPath.c_str(), dll_path_list, "*.dll");
-	
+#elif __linux
+
+	Utility::GetFilesFromDir(strPath.c_str(), dll_path_list, "*.so");
+#endif
 	if (!dll_path_list.Length()){
 		Console::WriteLine("No dll in the path");
 		return;
@@ -137,12 +143,18 @@ void  CServerSet::ReadModules(string sModulesPath)
 		try
 		{
 			for (int i = 0; i < dll_path_list.Length(); i++) {
-				suString filename = dll_path_list[i];
-				suString ext = filename.FindExtension();
+				suString filename = dll_path_list[i];          
+				suString ext = filename.FindExtension();         
+#ifdef WIN32
 				suString service_name = filename.SubString(0, filename.Length() - ext.Length()).MakeUppercase();
-				
+#elif __linux		
+				//remove "lib" in "libNull.so"  -> "Null"
+				suString service_name = filename.SubString(3, filename.Length() - ext.Length() - 3).MakeUppercase();
+#endif
 				_tString path = strPath +  _tString(filename.CString());
+				
 				modulesMapList_[service_name.CString()] = LoadModuleEx(path);
+				std::cout << "initialize "  << path << std::endl;
 				modulesMapList_[service_name.CString()]->initialize();
 			}
 			

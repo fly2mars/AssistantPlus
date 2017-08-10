@@ -13,7 +13,7 @@ set(SRC_LIST ${SRC_SOURCES}
               )
 
 
-set(PROJECT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include) 
+set(PROJECT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src) 
 set(PROJECT_LIBRARY_DIRS ${CMAKE_SOURCE_DIR}/lib) 
 
 set(PROJECT_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin/)
@@ -83,8 +83,9 @@ link_directories(
 ###########################DLLs########################################
 ####Add Dlls to solution
 include( cmake/CMakeInclude.cmake )
-set(_CommonFiles "Modules/suVirtualDevice.cpp"  "Modules/suVirtualDevice.cpp" "include/Engines.h" "include/Engines.cpp")
+set(_CommonFiles "Modules/config.h"  "Modules/config.cpp"  "Modules/suVirtualDevice.cpp"  "Modules/suVirtualDevice.cpp" )
 
+install_App_Dll("Null"  ${PROJECT_DLL_DIR} ${_CommonFiles})
 ## install_App_Dll("GetVar"  ${PROJECT_DLL_DIR} ${_CommonFiles})
 ## install_App_Dll("SetVar"  ${PROJECT_DLL_DIR} ${_CommonFiles})
 ## install_App_Dll("Quote"  ${PROJECT_DLL_DIR} ${_CommonFiles})

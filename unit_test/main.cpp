@@ -5,12 +5,17 @@
 
 #include <iostream>
 #include "../src/ServerSet.h"
-
+#ifdef __linux
+#include <unistd.h>
+#include <dirent.h>
+#endif
 #ifdef WIN32
+
 #pragma comment(lib,"ws2_32.lib")
 #endif
 UTFUNC(suStringTest)
 {
+	return;
 	std::cout << "- " << this->name().c_str() << " has started." << std::endl;
 	suString filename;
 
@@ -30,6 +35,7 @@ UTFUNC(suStringTest)
 char *pSelfName;
 UTFUNC(getCurdir)
 {
+	return;
 	std::cout << "- " << this->name().c_str() << " has started." << std::endl;
 	//namespace fs = boost::filesystem;
 
@@ -49,56 +55,45 @@ UTFUNC(getCurdir)
 
 UTFUNC(testTinyXML2)
 {
+	return;
 	std::cout << "- " << this->name().c_str() << " has started." << std::endl;
 	
 	COption m_Options;
 	m_Options.LoadSetting();
 	m_Options.dump();
-	/*std::string configPath = "E:/git/AssistantPlus/bin/Set/Config.xml";
-	configPath = "./utf8test.xml";
-	tinyxml2::XMLDocument conf;
-	conf.LoadFile(configPath.c_str());
+
+}
+
+
+#ifdef __linux
+
+UTFUNC(readDir)
+{
+	std::cout << "- " << this->name().c_str() << " has started." << std::endl;
+
+	suString path = "/home/share/AssistantPlus/build";
 	
-	std::cout << " error id : " << conf.ErrorID() << std::endl;
-	suString msg;
+	/*struct dirent *dp;
+	DIR *dirp = opendir(".");
 
-	std::map<std::string, std::string>  listKeys;
-
-	tinyxml2::XMLElement * pRoot = conf.FirstChildElement("setting");
-	if (pRoot == nullptr) throw suException("conf parse error");
-
-   
-	tinyxml2::XMLElement * pElement = pRoot->FirstChildElement("add");
-	if (pElement == nullptr)  throw suException("No add key is found.");
-
-	const char * pKey = nullptr;
-	const char * pValue = nullptr;
-	while (pElement != nullptr){
-		pKey = pElement->Attribute("key");
-		if (pKey != nullptr) {
-			pValue = pElement->Attribute("value");
-			if (pValue != nullptr) {
-				listKeys[pKey] = std::string(pValue);
-			}
+	while ((dp = readdir(dirp)) != NULL) {
+		suString file_name = dp->d_name;
+		if (file_name.FindExtension() == ".so") {
+			std::cout << "file: " << dp->d_name << std::endl;
 		}
-		pElement = pElement->NextSiblingElement("add");
+		
+		
 	}
-	
-   
-	for (std::map<std::string, std::string>::iterator it = listKeys.begin(); it != listKeys.end(); it++)
-	{
-		Console::WriteLine(it->first.c_str());
-		Console::WriteLine(it->second.c_str());
-
+	closedir(dirp);*/
+	suVector<suString> fileList;
+	Utility::GetFilesFromDir(path, fileList, "*.so");
+	for (int i = 0; i < fileList.Length(); i++) {
+		std::cout << fileList[i].CString() << std::endl;
 	}
-*/
-
-	
-
 	
 
 }
-#ifdef __linux
+
 std::string GetPrimaryIp()
 {
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);

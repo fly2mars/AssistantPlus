@@ -257,7 +257,16 @@ namespace SimpleWeb {
 
 					if (!parse_request(request))
 						return;
+	
+					//if (request->method == "POST")
+					//{
+					//	//debug
+					//	std::cout << "content: " << request->content.string() << std::endl;
 
+					//	std::cout << request->method << std::endl;
+					//	std::cout << request->path << std::endl;
+
+					//}
 					//If content, read that as well
 					auto it = request->header.find("Content-Length");
 					if (it != request->header.end()) {
@@ -296,6 +305,7 @@ namespace SimpleWeb {
 			std::string line;
 			getline(request->content, line);
 			size_t method_end;
+
 			if ((method_end = line.find(' ')) != std::string::npos) {
 				size_t path_end;
 				if ((path_end = line.find(' ', method_end + 1)) != std::string::npos) {
@@ -310,6 +320,7 @@ namespace SimpleWeb {
 					}
 					else
 						return false;
+					
 
 					getline(request->content, line);
 					size_t param_end;

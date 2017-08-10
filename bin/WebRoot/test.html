@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <script src="js/soapclient.js"></script>
+
+  <script>
+    var num = 0;
+
+    var xPos = 10;
+    var yPos = 20;
+    var yLine = 20;
+    var yPosMax = 80 - 20;
+
+    function ReplaceWithServiceUrl(serviceName) {
+      var str = document.location.href;
+      var newUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + "/" + serviceName;
+      return newUrl;
+    }
+    function Msg(message) {
+      var canvas = document.getElementById('msgCanvas');
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+        ctx.fillText(message, xPos, yPos);
+
+        yPos = (yPos >= yPosMax) ? 20 : yPos + 20;
+      }
+    }
+    function HelloWorld() {
+      console.log(++num);
+      var paraList = new SOAPClientParameters();
+
+      paraList.add("cmd", "Hi, I'm running!");
+      console.log(paraList.toXml());
+      var url_ = ReplaceWithServiceUrl("ws_null");
+      console.log(url_);
+
+      SOAPClient.invoke(url_, "run", paraList, true, HelloWorld_callBack);
+
+     
+    }
+
+    function HelloWorld_callBack(r) {
+      Msg(r);
+    }
+
+  </script>
+
+</head>
+
+<body>
+
+  <section>
+    <header>Test Unit 1</header>
+    <!--canvas-->
+    <canvas id="msgCanvas" width="650" height="80">
+    </canvas>
+    </p>
+    <input id="cmd"></input>
+    <button id="tb1" onclick='HelloWorld()'> HelloWorld</button>
+  </section>
+
+  <section>
+    <header>Test Unit 2</header>
+    <input id="zip" name="zip" pattern="[\d]{5}(-[\d]{4})"> <br>
+    <datalist id="services">
+      <select>
+        <option value="Mercury"></option>
+        <option value="Venus"></option>
+        <option value="Earth"></option>
+        <option value="Mars"></option>
+      </select>
+    </datalist>
+    <button>刷新列表</button><button onclick="调用"> <label id="servce_name">selected service</label>
+</section>
+
+<section>
+   <header>Web Forms 2.0</header>
+   <!--type, placeholder,list, and datalist-->
+   <label for="pass">Your Pass</label>
+   <input id="pass" name="pass" type="password" required="">
+   <input type="text" name="homeworld" id="homeworld" list="planets">
+   <datalist id="services1">
+         <select>
+           <option value="Mercury"></option>
+           <option value="Venus"></option>
+           <option value="Earth"></option>
+           <option value="Mars"></option>
+         </select>
+   </datalist>
+
+   <!--search-->
+   <label for="query">Search</label>
+   <input id="query" name="query" type="search" placeholder="search for..."><br>
+   <label for="amount">Amount</label>
+   <input id="amount" name="amount" type="range" min="1" max="10">
+   <input id="number" name="naumber" type="number" min="1" ma="5">
+   <!--date, datetime, datetime-local, time and month-->
+   <input id="dtstart" name="dtstart" type="date">
+   <label for="bgcolor">Background Color</label>
+   <input id="bgcolor" name="bgcolor" type="color">
+   <label>US Zip code</label>
+   <input id="zip" name="zip" pattern="[\d]{5}(-[\d]{4})">
+ </section>
+
+ <section>
+	 <header>html5语义</header>
+	 <h3>新元素</h3>
+	 <pre>
+	 HTML5引入一些新的内联元素来增强现有的功能，如<mark>span</mark>, <strong>strong</strong>, <em>em</em>和<em>abbr</em>等。
+	 </pre>
+	 <mark>span</mark>, <strong>strong</strong>, <em>em</em>和<em>abbr</em>
+
+	 如使用abbr元素将时间转为机器可读的格式。
+	 <pre>
+	 <abbr class="dtstart" title="1992-01-12">January 12th, 1992</abbr>
+	 </pre>
+	 或使用time，例如<time class="dtstart" title="1992-01-12">January 12th, 1992</time>
+
+	 其他表示语义相关的的还有meter，progress<br>
+	 <meter max="10">9 out of 10 cats</meter>,
+	 <span>例如</span>
+	 You profile is<progress min="0" max="100">100%</progress>complete.
+</section>
+
+</body></html>
