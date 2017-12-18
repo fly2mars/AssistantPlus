@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="UTF-8">
+		<title>My life calender</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Yuan's Life calendar">
+		<style type="text/css">
+			header, section, footer, aside, nav, article, figure, figcaption {
+				display: block;}
+			body {
+				color: #666666;
+				background-color: #f9f8f6;
+
+				background-position: center;
+				font-family: Georgia, Times, serif;
+				line-height: 1.4em;
+				margin: 0px;}
+			.wrapper {
+				width: 940px;
+				margin: 20px auto 20px auto;
+				border: 1px solid #555555;
+				background-color: #ffffff;}
+			header {
+				height: 160px;
+				background-image: url("images/header.jpg");}
+			h1 {
+				text-indent: -9999px;
+				width: 940px;
+				height: 130px;
+				margin: 0px;}
+			nav, footer {
+				clear: both;
+				color: #ffffff;
+				background-color: #aeaca8;
+				height: 30px;}
+			nav ul {
+				margin: 0px;
+				padding: 5px 0px 5px 30px;}
+			nav li {
+				display: inline;
+				margin-right: 40px;}
+			nav li a {
+				color: #ffffff;}
+			nav li a:hover, nav li a.current {
+				color: #000000;}
+			section.leftWindow {
+				float: left;
+				width: 659px;
+				border-right: 1px solid #eeeeee;}
+			article {
+				clear: both;
+				overflow: auto;
+				width: 100%;}
+			hgroup {
+				margin-top: 40px;}
+			figure {
+				float: left;
+				width: 290px;
+				height: 220px;
+				padding: 5px;
+				margin: 20px;
+				border: 1px solid #eeeeee;}
+			figcaption {
+				font-size: 90%;
+				text-align: left;}
+			aside {
+				width: 230px;
+				float: left;
+				padding: 0px 0px 0px 20px;}
+			aside section a {
+				display: block;
+				padding: 10px;
+				border-bottom: 1px solid #eeeeee;}
+			aside section a:hover {
+				color: #985d6a;
+				background-color: #efefef;}
+			a {
+				color: #de6581;
+				text-decoration: none;}
+			h1, h2, h3 {
+				font-weight: normal;}
+			h2 {
+				margin: 10px 0px 5px 0px;
+				padding: 0px;}
+			h3 {
+				margin: 0px 0px 10px 0px;
+				color: #de6581;}
+			aside h2 {
+				padding: 30px 0px 10px 0px;
+				color: #de6581;}
+			footer {
+				font-size: 80%;
+				padding: 7px 0px 0px 20px;}
+
+
+
+			/* Page */
+
+			label {
+				font-weight: normal;
+			}
+			canvas {
+				max-width: 100%;
+			}
+
+			#calendar-settings {
+				margin-top: 20px;
+			}
+
+			#calendar-canvas {
+				margin-top: 20px;
+			}
+		</style>
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="wrapper">
+			<!--<header><h1>Yuan's homepage</h1></header>-->
+			<section class="leftWindow">
+               <div id="calendar-canvas"></div>
+
+			</section>
+			<aside>
+				<section class="c1">
+					<form>
+
+									<div class="form-group">
+										<label for="b-date" id="lang_set_birthday"></label>
+										<div id="sdate-picker">
+											<select id="sdate-day" class="form-control"></select>
+											<select id="sdate-month" class="form-control"></select>
+											<select id="sdate-year" class="form-control"></select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="theme" id="lang_set_theme"></label>
+										<select class="form-control" id="theme">
+											<option value="0">Dark</option>
+											<option value="1">Light</option>
+											<option value="2">Red</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label for="lang" id="lang_select_lang"></label>
+										<select class="form-control" id="lang">
+											<option value="0">中文</option>
+											<option value="1">English</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<div>
+											<label for="" id="lang_save_print"></label>
+										</div>
+										<div class="btn-group">
+											<a href="#" class="btn btn-default" id="lang_save_jpg"></a>
+											<a href="#" class="btn btn-default" id="lang_save_pdf"></a>
+											<a href="#" class="btn btn-default" id="lang_print"></a>
+										</div>
+									</div>
+
+			</form>
+				</section>
+				<section class="c1">
+				<h4><label for="" id="lang_info"></label></h4>
+				<span><label for="" id="info_for_week"></label></span>
+				</section>
+
+			</aside>
+			<footer>
+				&copy; 2017 Yuan's homepage
+			</footer>
+		</div><!-- .wrapper -->
+		<script src="vendor/jspdf/jspdf.min.js"></script>
+		<script src="vendor/sdate/sdate.js"></script>
+		<script src="js/life-calendar.js"></script>
+        <script src="js/app.js"></script>
+	</body>
+</html>
