@@ -4,7 +4,7 @@
 
 SET(Boost_ADDITIONAL_VERSIONS "1.53" "1.53.0" "1.54" "1.54.0" "1.55" "1.55.0" "1.56" "1.56.0" "1.67")
 #Change this path
-#SET(BOOST_ROOT "${PROJECT_SOURCE_DIR}/../spaint/libraries/boost_1_56_0" CACHE FILEPATH "The Boost root directory")
+SET(BOOST_ROOT E:/devLib/boost CACHE FILEPATH "The Boost root directory")
 SET(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 message("BOOST ROOT: " ${BOOST_ROOT})
