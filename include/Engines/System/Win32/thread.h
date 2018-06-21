@@ -46,7 +46,7 @@ public:
 
   bool start () 
   {
-    threadid_ = _beginthreadex (0, 0, thread_, this,
+    threadid_ = (int)_beginthreadex (0, 0, thread_, this,
                                 CREATE_SUSPENDED, (unsigned int*) &threadid_);
     if (threadid_ != 0)
       ResumeThread ((HANDLE)threadid_);

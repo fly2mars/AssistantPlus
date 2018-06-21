@@ -103,7 +103,7 @@ namespace Utility
 
 		struct _finddata_t fs;    //!< file struct
 		_chdir(path.CString());
-		long handle = _findfirst(extFilter.CString(), &fs);
+		long long handle = _findfirst(extFilter.CString(), &fs);
 
 		if (GetFileAttributes(fs.name) & FILE_ATTRIBUTE_DIRECTORY)
 		{

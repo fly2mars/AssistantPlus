@@ -17,6 +17,7 @@ else()
 	                        ${DLL_${dllName}_SRC_HEADERS}                               				
 				${_args}			
 				      )
+	set_property(TARGET ${dllName} PROPERTY FOLDER "Modules")
         ##Copy dll to 
         ADD_CUSTOM_COMMAND(TARGET ${dllName}
 		  POST_BUILD          

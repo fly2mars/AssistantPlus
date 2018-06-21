@@ -71,7 +71,7 @@ public:
 	*/
 	void showHelp(const char* msg){		
 		std::string fn = std::string(cmd[0].CString());
-		int idx = fn.find_last_of('\\');
+		int idx = (int)fn.find_last_of('\\');
 		
 		printf("use:\n     %s %s \n", fn.substr(idx+1, fn.length()-idx).c_str(), msg);
 	}

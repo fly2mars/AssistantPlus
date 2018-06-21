@@ -12,11 +12,11 @@
 #include "ServerSet.h"
 #include "suHttpParser.h"
 
-suLock lock;
+suLock sulock;
 void default_resource_send(const  suServer<HTTP> &server, const std::shared_ptr< suServer<HTTP>::Response> &response,
 	const std::shared_ptr<std::ifstream> &ifs) {
 	//read and send 128 KB at a time
-	suLocker locker(lock);
+	suLocker locker(sulock);
 	static std::vector<char> buffer(131072); // Safe when server is running on one thread
 	std::streamsize read_length;
 	if ((read_length = ifs->read(&buffer[0], buffer.size()).gcount()) > 0) {
