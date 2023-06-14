@@ -17,6 +17,12 @@ else()
 endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+###############
+#  Find Lib   #
+###############
+
+## C++ Boost
+INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseBoost.cmake)
 
 ################
 # Project path #
@@ -25,7 +31,7 @@ set(PROJECT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src)
 set(PROJECT_LIBRARY_DIRS ${CMAKE_SOURCE_DIR}/lib) 
 
 set(PROJECT_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin/)
-set(PROJECT_DLL_DIR ${CMAKE_SOURCE_DIR}/bin/app)
+set(PROJECT_DLL_DIR ${CMAKE_SOURCE_DIR}/bin/App)
 
 set(PROJECT_LIBRARYS)
 
@@ -41,14 +47,6 @@ link_directories(
   ${PROJECT_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS} 
   )
-
-
-###############
-#  Find Lib   #
-###############
-
-## C++ Boost
-INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseBoost.cmake)
 
 
 ## Threads
@@ -163,3 +161,5 @@ ENDIF(OPTION_MODULES)
 IF(OPTION_TEST_UNIT)
   add_subdirectory("unit_test")
 ENDIF(OPTION_TEST_UNIT)
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${APP_NAME})

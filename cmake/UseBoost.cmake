@@ -2,9 +2,9 @@
 # UseBoost.cmake #
 ##################
 
-SET(Boost_ADDITIONAL_VERSIONS "1.53" "1.53.0" "1.54" "1.54.0" "1.55" "1.55.0" "1.56" "1.56.0" "1.67")
+SET(Boost_ADDITIONAL_VERSIONS "1.77.0" "1.53.0" "1.54" "1.54.0" "1.55" "1.55.0" "1.56" "1.56.0" "1.67")
 #Change this path
-SET(BOOST_ROOT E:/devLib/boost CACHE FILEPATH "The Boost root directory")
+SET(BOOST_ROOT C:/devLib/ CACHE FILEPATH "The Boost root directory")
 SET(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 message("BOOST ROOT: " ${BOOST_ROOT})
