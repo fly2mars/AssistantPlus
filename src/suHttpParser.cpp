@@ -95,8 +95,8 @@ suHttpParser::suHttpParser(void)
 	m_MimeTypes["mpe"]	= "video/mpeg";
 	m_MimeTypes["avi"]	= "video/msvideo";
 	m_MimeTypes["mov"]	= "video/quicktime";
-	m_MimeTypes["qt"]		= "video/quicktime";
-	m_MimeTypes["shtml"]	= "wwwserver/html-ssi";
+	m_MimeTypes["qt"]	= "video/quicktime";
+	m_MimeTypes["shtml"]= "wwwserver/html-ssi";
 	m_MimeTypes["asa"]	= "wwwserver/isapi";
 	m_MimeTypes["asp"]	= "wwwserver/isapi";
 	m_MimeTypes["cfm"]	= "wwwserver/isapi";

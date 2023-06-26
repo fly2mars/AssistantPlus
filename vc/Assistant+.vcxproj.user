@@ -6,8 +6,8 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommand>E:/git/AssistantPlus/bin/Assistant+.exe</LocalDebuggerCommand>
-    <LocalDebuggerWorkingDirectory>E:/git/AssistantPlus/bin/</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>@WORKING_COMMAND@</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>@USERFILE_WORKING_DIRECTORY_DEBUG@</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

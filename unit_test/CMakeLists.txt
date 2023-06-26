@@ -8,6 +8,9 @@ add_executable (UnitTest main.cpp
                 ../src/ServerSet.cpp  ../src/Option.cpp
 	../src/redispp.cpp ../src/suMemory.cpp)
 target_link_libraries( UnitTest  
+           common
+           Boost::log_setup 
+           Boost::log
            ${Boost_LIBRARIES}
 		   ${CMAKE_THREAD_LIBS_INIT}
 		   ${CMAKE_DL_LIBS}  )   #dlopen lib

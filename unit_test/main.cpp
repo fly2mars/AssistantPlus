@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "../src/ServerSet.h"
+#include "../common/cvLogging.hpp"
 #ifdef __linux
 #include <unistd.h>
 #include <dirent.h>
@@ -15,8 +16,10 @@
 #endif
 UTFUNC(suStringTest)
 {
-	return;
+	cvLogging::gOnly().init_log("log_test.log");
+	
 	std::cout << "- " << this->name().c_str() << " has started." << std::endl;
+	std::cout << "Logging into file log/log_test.log" << std::endl;
 	suString filename;
 
 	filename = "test.dll";
@@ -26,10 +29,10 @@ UTFUNC(suStringTest)
 	std::cout << service_name.CString() << std::endl;
 
 	suVector<suString> fileList;
-	Utility::GetFilesFromDir("E:/FangCloudSync/Books/AI", fileList, "*.pdf");
+	Utility::GetFilesFromDir("c:/windows/system32", fileList, "*.exe");
 	
 	for(int i=0; i<fileList.Length(); i++)
-	  std::cout << fileList[i].CString() << std::endl;
+	  cvTrace(fileList[i].CString() );
 }
 
 char *pSelfName;

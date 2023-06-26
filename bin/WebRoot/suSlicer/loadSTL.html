@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>LoadModel</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+    .grid-container {
+	  display: grid;
+	  grid-template-rows: auto auto;
+	  grid-template-columns: 1fr;
+	  gap: 10px;
+	}
+
+
+	#ViewerSTL{
+            display: inline-block;
+            float:left;
+	        border: 1px solid #ccc;
+	        padding: 10px;
+	        margin: 10px;
+	        border-radius: 10px;
+            min-width: 200px;
+            min-height: 160px;
+            width: 60%;
+            height:600px;
+	        -moz-transition: all 1s ease-in-out;
+	        -webkit-transition: all 1s ease-in-out;
+	        -o-transition: all 1s ease-in-out;
+	        -ms-transition: all 1s ease-in-out;
+	        transition: all 1s ease-in-out;
+	      }
+	#RPannel {
+      display: inline-block;
+	  float:left;
+	  width: 30%;
+	  height:600px;
+	  border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px;
+	  border-radius: 10px;
+	  background-color: lightgray;
+    }
+    #WorkflowPannel {
+	      display: inline-block;
+		  float:left;
+		  width: 100%;
+		  height:600px;
+		  border: 1px solid #ccc;
+	      padding: 10px;
+	      margin: 10px;
+		  border-radius: 10px;
+		  background-color: lightgray;
+    }
+   </style>
+  </head>
+  <body>
+    <h1>Fab Flow</h1>
+
+    <div class="grid-container">
+      <div style="width:100%; ">
+        <div id="ViewerSTL"></div>
+
+		<div id="RPannel">
+			<h3 style="margin-top: 0.0em; margin-bottom: 0.2em; ">打印参数</h3>
+			<hr style="display: block; margin-top: 0.1em; margin-bottom: 0.5em; margin-left: auto; margin-right: auto; border-style: inset; border-width: 1px;">
+			<label for="stl">打印模型： </label><input type="file" name="stl" id="stl"><button>上传</button> <br>
+			<label for="inp">工况模型： </label><input type="file" name="inp" id="inp"><button>上传</button> <br>
+			<label for="processes">工艺类型：</label>
+			<select id="processes">
+				<option value="PLA+PET">FFF PLA+PET</option>
+				<option value="PLA+Kevlar">FFF PLA+Kevlar</option>
+				<option value="PLA+Carbon">FFF PLA+Carbon</option>
+				<option value="PLA+Glass">FFF PLA+Glass</option>
+			</select><br />
+
+			<label for="layer_thick">层&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;厚: </label><input id="layer_thick" name="layer" type="number" value="0.3" min="0.1" ma="0.5">mm<br>
+			<label for="nozzle_diameter">喷嘴直径: </label><input id="nozzle_diameter" name="nozzle_diameter" type="number" min="0.1" ma="0.5" value="0.4">mm<br>
+			<label for="printers">打印设备：</label>
+			<select id="printers">
+				<option value="CFFF250">CFFF 250×250×350</option>
+				<option value="FFF-JiGuang">FFF 极光尔沃</option>
+				<option value="PLA+Carbon">FFF 250×250×350</option>
+			</select><br />
+			<hr>
+			<h3 style="margin-top: 0.0em; margin-bottom: 0.2em; ">工作流配置</h3>
+			<textarea id="mySavedModel" style="width:100%;height:280px">
+			{"class": "GraphLinksModel",
+			  "nodeCategoryProperty": "type",
+			  "linkFromPortIdProperty": "frompid",
+			  "linkToPortIdProperty": "topid",
+			  "nodeDataArray": [
+			{"key":1,"type":"Table","name":"STL Model"},
+			{"key":2,"type":"Table","name":"Work Case"},
+			{"key":3,"type":"Table","name":"Process Info"},
+			{"key":11,"type":"Join","name":"Stress Field Generation"},
+			{"key":12,"type":"Join","name":"CIICP Path Generation"},
+			{"key":71,"type":"Export","name":"File"},
+			{"key":-16,"type":"Join","name":"Slice"},
+			{"key":-17,"type":"Join","name":"GCode"},
+			{"key":-18,"type":"Filter","name":"Tetgen"}
+			],
+			  "linkDataArray": [
+			{"from":2,"frompid":"OUT","to":11,"topid":"R"},
+			{"from":1,"to":-16,"frompid":"OUT","topid":"L"},
+			{"from":11,"to":12,"frompid":"M","topid":"R"},
+			{"from":-16,"to":12,"frompid":"M","topid":"L"},
+			{"from":1,"to":-18,"frompid":"OUT","topid":""},
+			{"from":-18,"to":11,"frompid":"OUT","topid":"L"},
+			{"from":12,"to":-17,"frompid":"M","topid":"L"},
+			{"from":3,"to":-17,"frompid":"OUT","topid":"R"},
+			{"from":-17,"to":71,"frompid":"M","topid":""}
+		   ]}
+       </textarea>
+			<div>
+				<button id="SaveButton" onclick="save()">保存工作流</button>
+				<button onclick="load()">显示工作流</button>
+				<button id="GenerateGCode" onclick="GenerateGCode()">执行工作流（生成GCode）</button>
+			</div>
+		</div>
+		
+
+	  </div>
+	  <div id="WorkflowPannel">Workflow</div>
+	  
+	</div>
+	<script src="js/gojs/go-debug.js"></script>
+    <script src="js/three.js"></script>
+    <script src="js/STLLoader.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/handLoader.js"></script>
+
+    <!-- The "go" object is the "namespace" that holds all of the GoJS types. -->
+	<script id="code">
+	    function init() {
+
+	      // Since 2.2 you can also author concise templates with method chaining instead of GraphObject.make
+	      // For details, see https://gojs.net/latest/intro/buildingObjects.html
+	      const $ = go.GraphObject.make;
+
+	      myDiagram =
+	        new go.Diagram("WorkflowPannel",
+	          {
+	            initialContentAlignment: go.Spot.Left,
+	            initialAutoScale: go.Diagram.UniformToFill,
+	            layout: $(go.LayeredDigraphLayout,
+	              { direction: 0, alignOption: go.LayeredDigraphLayout.AlignAll }),
+	            "undoManager.isEnabled": true
+	          }
+	        );
+
+	      // when the document is modified, add a "*" to the title and enable the "Save" button
+	      myDiagram.addDiagramListener("Modified", e => {
+	        var button = document.getElementById("SaveButton");
+	        if (button) button.disabled = !myDiagram.isModified;
+	        var idx = document.title.indexOf("*");
+	        if (myDiagram.isModified) {
+	          if (idx < 0) document.title += "*";
+	        } else {
+	          if (idx >= 0) document.title = document.title.slice(0, idx);
+	        }
+	      });
+
+	      function makePort(name, leftside) {
+	        var port = $(go.Shape, "Rectangle",
+	          {
+	            fill: "gray", stroke: null,
+	            desiredSize: new go.Size(8, 8),
+	            portId: name,  // declare this object to be a "port"
+	            toMaxLinks: 1,  // don't allow more than one link into a port
+	            cursor: "pointer"  // show a different cursor to indicate potential link point
+	          });
+
+	        var lab = $(go.TextBlock, name,  // the name of the port
+	          { font: "7pt sans-serif" });
+
+	        var panel = $(go.Panel, "Horizontal",
+	          { margin: new go.Margin(2, 0) });
+
+	        // set up the port/panel based on which side of the node it will be on
+	        if (leftside) {
+	          port.toSpot = go.Spot.Left;
+	          port.toLinkable = true;
+	          lab.margin = new go.Margin(1, 0, 0, 1);
+	          panel.alignment = go.Spot.TopLeft;
+	          panel.add(port);
+	          panel.add(lab);
+	        } else {
+	          port.fromSpot = go.Spot.Right;
+	          port.fromLinkable = true;
+	          lab.margin = new go.Margin(1, 1, 0, 0);
+	          panel.alignment = go.Spot.TopRight;
+	          panel.add(lab);
+	          panel.add(port);
+	        }
+	        return panel;
+	      }
+
+	      function makeTemplate(typename, icon, background, inports, outports) {
+	        var node = $(go.Node, "Spot",
+	          $(go.Panel, "Auto",
+	            { width: 100, height: 120 },
+	            $(go.Shape, "Rectangle",
+	              {
+	                fill: background, stroke: null, strokeWidth: 0,
+	                spot1: go.Spot.TopLeft, spot2: go.Spot.BottomRight
+	              }),
+	            $(go.Panel, "Table",
+	              $(go.TextBlock, typename,
+	                {
+	                  row: 0,
+	                  margin: 3,
+	                  maxSize: new go.Size(80, NaN),
+	                  stroke: "black",
+	                  font: "bold 12pt sans-serif"
+	                }),
+	              $(go.Picture, icon,
+	                { row: 1, width: 16, height: 16, scale: 3.0 }),
+	              $(go.TextBlock,
+	                {
+	                  row: 2,
+	                  margin: 3,
+	                  editable: true,
+	                  maxSize: new go.Size(80, 40),
+	                  stroke: "white",
+	                  font: "bold 9pt sans-serif"
+	                },
+	                new go.Binding("text", "name").makeTwoWay())
+	            )
+	          ),
+	          $(go.Panel, "Vertical",
+	            {
+	              alignment: go.Spot.Left,
+	              alignmentFocus: new go.Spot(0, 0.5, 8, 0)
+	            },
+	            inports),
+	          $(go.Panel, "Vertical",
+	            {
+	              alignment: go.Spot.Right,
+	              alignmentFocus: new go.Spot(1, 0.5, -8, 0)
+	            },
+	            outports)
+	        );
+	        myDiagram.nodeTemplateMap.set(typename, node);
+	      }
+
+	      makeTemplate("Table", "images/table.svg", "forestgreen",
+	        [],
+	        [makePort("OUT", false)]);
+
+	      makeTemplate("Join", "images/join.svg", "mediumorchid",
+	        [makePort("L", true), makePort("R", true)],
+	        [makePort("UL", false), makePort("ML", false), makePort("M", false), makePort("MR", false), makePort("UR", false)]);
+
+	      makeTemplate("Project", "images/project.svg", "darkcyan",
+	        [makePort("", true)],
+	        [makePort("OUT", false)]);
+
+	      makeTemplate("Filter", "images/filter.svg", "cornflowerblue",
+	        [makePort("", true)],
+	        [makePort("OUT", false), makePort("INV", false)]);
+
+	      makeTemplate("Group", "images/group.svg", "mediumpurple",
+	        [makePort("", true)],
+	        [makePort("OUT", false)]);
+
+	      makeTemplate("Sort", "images/sort.svg", "sienna",
+	        [makePort("", true)],
+	        [makePort("OUT", false)]);
+
+	      makeTemplate("Export", "images/upload.svg", "darkred",
+	        [makePort("", true)],
+	        []);
+
+	      myDiagram.linkTemplate =
+	        $(go.Link,
+	          {
+	            routing: go.Link.Orthogonal, corner: 25,
+	            relinkableFrom: true, relinkableTo: true
+	          },
+	          $(go.Shape, { stroke: "gray", strokeWidth: 2 }),
+	          $(go.Shape, { stroke: "gray", fill: "gray", toArrow: "Standard" })
+	        );
+
+	      load();
+	    }
+
+	    // Show the diagram's model in JSON format that the user may edit
+	    function save() {
+	      document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+	      myDiagram.isModified = false;
+	    }
+	    function load() {
+	      myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+	    }
+	    window.addEventListener('DOMContentLoaded', init);
+  </script>
+
+  </body>
+</html>

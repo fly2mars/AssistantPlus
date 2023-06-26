@@ -11,6 +11,7 @@
 
 #include "ServerSet.h"
 #include "suHttpParser.h"
+#include "../common/cvLogging.hpp"
 
 suLock sulock;
 void default_resource_send(const  suServer<HTTP> &server, const std::shared_ptr< suServer<HTTP>::Response> &response,
@@ -77,18 +78,27 @@ void suServer<HTTP> ::init()
 
 	};
 
-	//Upload file
-	//Post web service
+	//Receive Upload File in post form
+	//Example: upload.html
 	resource[R"(^/(upload|UPLOAD)$)"]["POST"] =
 		[this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request)
 	{
 		std::stringstream content_stream;
+		std::string boundary;
 		content_stream << "<h1>Request from " << request->remote_endpoint_address << " (" << request->remote_endpoint_port << ")</h1>";
 		content_stream << request->method << " " << request->path << " HTTP/" << request->http_version << "<br>";
 		for (auto& header : request->header) {
 			content_stream << header.first << ": " << header.second << "<br>";
+			if (header.first == "boundary") {
+				boundary = header.second;
+				cvTrace(boundary);
+			}
 		}
-
+		
+		std::string filename = "";
+		std::string filedata = "";
+		// Find the start of the file data
+		size_t startpos = request->content.string().find(boundary) + boundary.length() + 2;
 		content_stream << "<h1>Content</h1>";
 		content_stream << request->content.string().c_str();
 		//find length of content_stream (length received using content_stream.tellp())

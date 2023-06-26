@@ -30,7 +30,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseBoost.cmake)
 set(PROJECT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src) 
 set(PROJECT_LIBRARY_DIRS ${CMAKE_SOURCE_DIR}/lib) 
 
-set(PROJECT_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin/)
+set(DEPLOY_DIR ${CMAKE_SOURCE_DIR}/bin/)
 set(PROJECT_DLL_DIR ${CMAKE_SOURCE_DIR}/bin/App)
 
 set(PROJECT_LIBRARYS)
@@ -47,6 +47,12 @@ link_directories(
   ${PROJECT_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS} 
   )
+
+# ========================================
+# === common, build static lib to speed up
+# ========================================
+file(GLOB COMMON_SOURCES common/*.cpp)
+add_library(common STATIC ${COMMON_SOURCES})
 
 
 ## Threads
@@ -72,6 +78,9 @@ add_executable (${APP_NAME} ${SRC_LIST} )
 
 
 target_link_libraries( ${APP_NAME}  
+           common
+           Boost::log_setup 
+           Boost::log
            ${Boost_LIBRARIES}
 		   ${CMAKE_THREAD_LIBS_INIT}
 		   ${CMAKE_DL_LIBS}  )   #dlopen lib
@@ -80,8 +89,10 @@ target_link_libraries( ${APP_NAME}
 # copy bin to binary folder
 ADD_CUSTOM_COMMAND(TARGET ${APP_NAME}
           POST_BUILD         
-          COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${APP_NAME}> ${PROJECT_BINARY_DIR}
+          COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${APP_NAME}> ${DEPLOY_DIR}
 )
+
+
 
 IF(MSVC) 
 	# set working directory 
@@ -89,8 +100,8 @@ IF(MSVC)
 	SET(USER_FILE ${APP_NAME}.vcproj.user)
 	SET(OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/)
 
-	SET(WORKING_COMMAND ${PROJECT_BINARY_DIR}${APP_NAME}.exe)
-	SET(USERFILE_WORKING_DIRECTORY_DEBUG ${PROJECT_BINARY_DIR})
+	SET(WORKING_COMMAND ${DEPLOY_DIR}${APP_NAME}.exe)
+	SET(USERFILE_WORKING_DIRECTORY_DEBUG ${DEPLOY_DIR})
 	CONFIGURE_FILE(vc/${APP_NAME}.vcxproj.user ${OUTPUT_PATH}${APP_NAME}.vcxproj.user @ONLY)
 	message(STATUS "编译后在bin目录生成文件，并使用模板文件和变量替换visual studio的调试设置")
 ENDIF(MSVC)
