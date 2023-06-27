@@ -63,5 +63,34 @@
               xhr.send(new FormData(form));
           });
       </script>
+      <input type="file" id="fu"><button id="uploadfile" onclick="upload_file();" >上传</button><br />
+      <script>
+          const button = document.getElementById('uploadfile');
+          console.log(button.onclick);
+          
+          function upload_file() {
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', '/upload');
+              xhr.upload.addEventListener('progress', (event) => {
+                  if (event.lengthComputable) {
+                      const percentComplete = event.loaded / event.total * 100;
+                      progressBar.style.width = percentComplete + '%';
+                      progress.innerHTML = progressBar.style.width
+                  }
+              });
+
+              xhr.onreadystatechange = function () {
+                  if (xhr.readyState === 4 && xhr.status === 200) {
+                      //console.log(xhr.responseText);
+                      feedback.innerHTML = xhr.responseText;
+                  }
+              };
+              fd = new FormData();
+              files = document.getElementById("fu").files;
+              console.log(files);
+              fd.append('file', files[0]);
+              xhr.send(fd);
+          }
+      </script>
   </body>
 </html>
